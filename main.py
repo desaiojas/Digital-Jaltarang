@@ -18,7 +18,7 @@ import math
 pygame.init()
 pygame.mixer.init(frequency=44100, size=-16, channels=2, buffer=0)
 pygame.mixer.pre_init(44100, -16, 2, 0) # Lower buffer size
-screen = pygame.display.set_mode((750,1000))
+screen = pygame.display.set_mode((750,700))
 pygame.display.set_caption("Jaltarang")
 clock = pygame.time.Clock()
 WHITE = (255,255,255)
