@@ -219,29 +219,29 @@ while running:
         running = False
       if event.key == pygame.K_SPACE:
         reset()
-      if event.key == pygame.K_a:
+      if event.key == pygame.K_1:
         water_change(0, C, BL)
-      if event.key == pygame.K_s:
+      if event.key == pygame.K_2:
         water_change(1, D, CS)
-      if event.key == pygame.K_d:
+      if event.key == pygame.K_3:
         water_change(2, E, DS)
-      if event.key == pygame.K_f:
+      if event.key == pygame.K_4:
         water_change(3, F, E)
-      if event.key == pygame.K_g:
+      if event.key == pygame.K_5:
         water_change(4, G, FS)
-      if event.key == pygame.K_h:
+      if event.key == pygame.K_6:
         water_change(5, A, GS)
-      if event.key == pygame.K_q:
+      if event.key == pygame.K_7:
         water_change(6, B, AS)
-      if event.key == pygame.K_w:
+      if event.key == pygame.K_8:
         water_change(7, CH, B)
-      if event.key == pygame.K_e:
+      if event.key == pygame.K_9:
         water_change(8, DH, CSH)
-      if event.key == pygame.K_r:
+      if event.key == pygame.K_0:
         water_change(9, EH, DSH)
-      if event.key == pygame.K_t:
+      if event.key == pygame.K_COMMA:
         water_change(10, FH, EH)
-      if event.key == pygame.K_y:
+      if event.key == pygame.K_PERIOD:
         water_change(11, GH, FSH)
       if event.key == pygame.K_UP:
         song = random.choice(songs)
