@@ -184,11 +184,15 @@ twinkle_twinkle = [C, C, G, G, A, A, G, "w", F, F, E, E, D, D, C, "w", G, G, F, 
 high_hot_cross_buns = [EH, DH, CH, "w", EH, DH, CH, "w", CH, CH, CH, CH, DH, DH, DH, DH, EH, DH, CH]
 mary = [E, D, C, D, E, E, E, "w", D, D, D, "w", E, G, G, "w", E, D, C, D, E, E, E, E, D, D, E, D, C]
 high_mary = [EH, DH, CH, DH, EH, EH, EH, "w", DH, DH, DH, "w", EH, GH, GH, "w", EH, DH, CH, DH, EH, EH, EH, EH, DH, DH, EH, DH, CH]
-happier_intro = [E, D, "w", E, D, "w", E, D, D, C, "w", A, G, E, D, C, D, E, "w", A, G, E, D, C, D, C]
-happier = [CH, CH, DH, CH, "w", CH, CH, CH, CH, DH, B, "w", GH, GH, EH, EH, DH, DH, CH, CH, CH, CH, CH, CH, DH, "w", CH, "w", CH, CH, DH, CH, "w", CH, CH, G, CH, DH, B, "w", GH, GH, EH, EH, DH, DH, CH, CH, CH, CH, G, CH, DH, "w", CH]
+jingle_bells = [E, E, E, "w", E, E, E, "w", E, G, C, D, E, "w", "w", "w", F, F, F, F, F, E, E, E, E, D, D, E, D, "w", G]
+high_jingle_bells = [EH, EH, EH, "w", EH, EH, EH, "w", EH, GH, CH, DH, EH, "w", "w", "w", FH, FH, FH, FH, FH, EH, EH, EH, EH, DH, DH, EH, DH, "w", GH]
+happier = [E, D, "w", E, D, "w", E, D, D, C, "w", A, G, E, D, C, D, E, "w", A, G, E, D, C, D, C]
+happier_intro = [CH, CH, DH, CH, "w", CH, CH, CH, CH, DH, B, "w", GH, GH, EH, EH, DH, DH, CH, CH, CH, CH, CH, CH, DH, "w", CH, "w", CH, CH, DH, CH, "w", CH, CH, G, CH, DH, B, "w", GH, GH, EH, EH, DH, DH, CH, CH, CH, CH, G, CH, DH, "w", CH]
 cheap_thrills = [E, A, B, CH, B, A, A, E, E, E, "w", G, D, D, "w", D, E, A, B, CH, B, A, A, E, E, E, "w", G, D, D, "w", D, E, A, B, CH, B, A, A, E, E, E, "w", G, D, D, "w", D, E, A, B, CH, B, A, A, E, E, E, "w", "w", D]
+jingle_bells = [E, E, E, "w", E, E, E, "w", E, G, C, D, E, "w", "w", "w", F, F, F, F, F, E, E, E, E, D, D, E, D, "w", G]
+high_jingle_bells = [EH, EH, EH, "w", EH, EH, EH, "w", EH, GH, CH, DH, EH, "w", "w", "w", FH, FH, FH, FH, FH, EH, EH, EH, EH, DH, DH, EH, DH, "w", GH]
 
-songs = [hot_cross_buns, mary, twinkle_twinkle, high_hot_cross_buns, high_mary]
+songs = [hot_cross_buns, mary, twinkle_twinkle, high_hot_cross_buns, high_mary, jingle_bells, high_jingle_bells]
 
 save = C
 played = False
