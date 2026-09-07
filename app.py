@@ -4,7 +4,7 @@ import time
 import base64
 import streamlit as st
 
-st.set_page_config(page_title="Digital Jaltarang", layout="wide")
+st.set_page_config(page_title="Digital Jaltarang Bowls", layout="wide")
 
 # Custom CSS for Wooden Background Theme & Typography
 st.markdown("""
@@ -37,7 +37,6 @@ st.markdown("""
 #     print(f"Converted {m4a_file} to {wav_file}")
 
 # Sounds
-BL = "C Jaltarang.wav"
 C = "C Jaltarang.wav"
 CS = "C# Jaltarang.wav"
 D = "D Jaltarang.wav"
@@ -59,17 +58,17 @@ FH = "FH Jaltarang.wav"
 FSH = "F#H Jaltarang.wav"
 GH = "GH Jaltarang.wav"
 
-ALL_PITCHES = [BL, C, CS, D, DS, E, F, FS, G, GS, A, AS, B, CH, CSH, DH, DSH, EH, FH, FSH, GH]
+ALL_PITCHES = [C, CS, D, DS, E, F, FS, G, GS, A, AS, B, CH, CSH, DH, DSH, EH, FH, FSH, GH]
 
-# Expanded to 13 Bowls to include Low B up to High G in the C Major Scale
-BASE_NOTES = [BL, C, D, E, F, G, A, B, CH, DH, EH, FH, GH]
+# 12 Bowls for the standard C Major Scale
+BASE_NOTES = [C, D, E, F, G, A, B, CH, DH, EH, FH, GH]
 
 if 'started' not in st.session_state:
     st.session_state.started = False
 if 'notes' not in st.session_state:
     st.session_state.notes = BASE_NOTES.copy()
 if 'water_states' not in st.session_state:
-    st.session_state.water_states = [0]*13
+    st.session_state.water_states = [0]*12
 if 'last_hz' not in st.session_state:
     st.session_state.last_hz = 262
 
@@ -84,8 +83,7 @@ def play_audio(file_path):
         pass 
 
 def find_hz(note):
-    # Adjusted BL to 247 Hz to accurately reflect Low B
-    hz_map = {BL: 247, C: 262, CS: 277, D: 294, DS: 311, E: 330, F: 349, FS: 370, G: 392, GS: 415, A: 440, AS: 466, B: 494, CH: 523, CSH: 554, DH: 587, DSH: 622, EH: 659, FH: 698, FSH: 740, GH: 784}
+    hz_map = {C: 262, CS: 277, D: 294, DS: 311, E: 330, F: 349, FS: 370, G: 392, GS: 415, A: 440, AS: 466, B: 494, CH: 523, CSH: 554, DH: 587, DSH: 622, EH: 659, FH: 698, FSH: 740, GH: 784}
     return hz_map.get(note, 262)
 
 def generate_wave(hz):
@@ -93,8 +91,6 @@ def generate_wave(hz):
 
 def get_note_label(note_filename):
     clean_name = note_filename.replace(" Jaltarang.wav", "")
-    if note_filename == BL:
-        return "B (Low)"
     if "H" in clean_name:
         return clean_name.replace("H", "") + " (High)"
     return clean_name
@@ -103,6 +99,7 @@ def water_change(ind, fill_level):
     base_note = BASE_NOTES[ind]
     try:
         base_idx = ALL_PITCHES.index(base_note)
+        # Prevents index from dropping below 0 (C)
         new_idx = max(0, base_idx - fill_level) 
         st.session_state.notes[ind] = ALL_PITCHES[new_idx]
         st.session_state.water_states[ind] = fill_level
@@ -113,7 +110,7 @@ def water_change(ind, fill_level):
 
 def reset():
     st.session_state.notes = BASE_NOTES.copy()
-    st.session_state.water_states = [0]*13
+    st.session_state.water_states = [0]*12
 
 if not st.session_state.started:
     st.title("Digital Jaltarang Bowls")
@@ -140,17 +137,17 @@ with st.sidebar:
         reset()
         st.rerun()
 
-st.markdown("### The Bowls (C Major Scale)")
+st.markdown("### Bowls (C Major Scale)")
 st.session_state.audio_player = st.empty() 
 
-# Adjusted column count and offsets for 13 bowls
-cols = st.columns(13)
-y_offsets = [0, 30, 60, 80, 95, 105, 110, 105, 95, 80, 60, 30, 0]
+# 12 bowls layout
+cols = st.columns(12)
+y_offsets = [0, 40, 70, 90, 100, 105, 105, 100, 90, 70, 40, 0]
 
 # 0: Ceramic White/Gray, 1: Vibrant Aqua, 2: Deep Sapphire
 colors = {0: "#F8F9FA", 1: "#00B4D8", 2: "#03045E"} 
 
-for i in range(13):
+for i in range(12):
     with cols[i]:
         note = st.session_state.notes[i]
         level = st.session_state.water_states[i]
