@@ -53,7 +53,7 @@ st.markdown("""
     }
 
     /* ===================================== */
-    /* BOWL BUTTONS & TEXT FORCING           */
+    /* TEXT FORCING INSIDE COLUMNS           */
     /* ===================================== */
 
     [data-testid="column"] {
@@ -87,37 +87,6 @@ st.markdown("""
     [data-testid="column"] [data-testid="stButton"] > button p {
         font-size: 14px !important;
         color: #2c1e16 !important;
-    }
-
-    /* ===================================== */
-    /* UNIVERSAL HORIZONTAL SCROLLING FIX    */
-    /* ===================================== */
-
-    /* 1. Un-clip Streamlit's parent containers so scrollbars can physically render */
-    .stApp, 
-    [data-testid="stAppViewContainer"], 
-    [data-testid="stAppViewMain"], 
-    .main, 
-    .block-container {
-        overflow-x: visible !important;
-    }
-
-    /* 2. Force ALL column containers to be a scrolling row instead of wrapping/squishing */
-    [data-testid="stHorizontalBlock"] {
-        display: flex !important;
-        flex-direction: row !important; 
-        flex-wrap: nowrap !important;   
-        overflow-x: auto !important;    
-        overflow-y: hidden !important;
-        -webkit-overflow-scrolling: touch !important; 
-        padding-bottom: 20px !important; /* Space for the scrollbar */
-        width: 100% !important;
-    }
-    
-    /* 3. Give every column a strict minimum width so they overflow rather than squeeze */
-    [data-testid="stHorizontalBlock"] > [data-testid="column"] {
-        min-width: 120px !important;
-        flex-shrink: 0 !important; /* This absolutely prevents the browser from squishing it */
     }
 </style>
 """, unsafe_allow_html=True)
@@ -243,7 +212,7 @@ st.markdown("""
     color: #2c1e16;
     font-size: 15px;
 ">
-    Reminder: Swiping left and right on the bowls will reveal the full scale.
+    Reminder: Hold your phone/device horizontally for the best experience.
 </div>
 """, unsafe_allow_html=True)
 
@@ -358,3 +327,44 @@ for i in range(12):
 st.divider()
 st.markdown(f"### Frequency Visualizer: {st.session_state.last_hz} Hz")
 st.line_chart(generate_wave(st.session_state.last_hz), height=200, use_container_width=True)
+
+# ==========================================================
+# JAVASCRIPT INJECTION: ABSOLUTE OVERRIDE FOR MOBILE SCROLL
+# ==========================================================
+components.html(
+    """
+    <script>
+        // Wait briefly for Streamlit to finish rendering the DOM
+        setTimeout(() => {
+            const parent = window.parent.document;
+            
+            // Find all blocks that act as layout containers
+            const containers = parent.querySelectorAll('div[data-testid="stHorizontalBlock"], div[data-testid="stVerticalBlock"]');
+            
+            containers.forEach(container => {
+                // Find how many columns are inside this specific container
+                const columns = container.querySelectorAll(':scope > div[data-testid="column"]');
+                
+                // If it has more than 5 columns, it's definitively our 12-bowl layout
+                if (columns.length > 5) {
+                    // Force the parent container to allow horizontal scrolling
+                    container.style.setProperty('display', 'flex', 'important');
+                    container.style.setProperty('flex-direction', 'row', 'important');
+                    container.style.setProperty('flex-wrap', 'nowrap', 'important');
+                    container.style.setProperty('overflow-x', 'auto', 'important');
+                    container.style.setProperty('overflow-y', 'hidden', 'important');
+                    container.style.setProperty('padding-bottom', '20px', 'important');
+                    
+                    // Force every bowl column to stay exactly 120px wide so they overflow
+                    columns.forEach(col => {
+                        col.style.setProperty('min-width', '120px', 'important');
+                        col.style.setProperty('max-width', '120px', 'important');
+                        col.style.setProperty('flex', '0 0 120px', 'important');
+                    });
+                }
+            });
+        }, 500); // 500ms delay ensures elements exist before modifying
+    </script>
+    """,
+    height=0, width=0
+)
