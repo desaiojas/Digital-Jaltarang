@@ -222,7 +222,7 @@ st.markdown("""
     color: #2c1e16;
     font-size: 15px;
 ">
-    📱 Reminder: Hold your phone/device horizontally for the best experience.
+    Reminder: Hold your phone/device horizontally for the best experience.
 </div>
 """, unsafe_allow_html=True)
 
@@ -243,24 +243,30 @@ for i in range(12):
         hz = find_hz(note)
         note_label = get_note_label(note)
 
-        if st.button(" ", key=f"p_{i}", use_container_width=True):
-            st.session_state.last_hz = hz
-            play_audio(note)
-
         st.markdown(f"""
         <style>
-        div[data-testid="stButton"] button[kind="secondary"][aria-label=" "] {{
-            margin-top: {y_offsets[i]}px;
-            margin-bottom: 20px;
-            width: 100% !important;
-            aspect-ratio: 1 !important;
+        [data-testid="stButton"] > button[aria-label=" "] {{
+            margin-top: {y_offsets[i]}px !important;
+            margin-bottom: 20px !important;
+            width: 120px !important;
+            min-width: 120px !important;
+            max-width: 120px !important;
+            height: 120px !important;
+            min-height: 120px !important;
+            max-height: 120px !important;
+            aspect-ratio: 1 / 1 !important;
             border-radius: 50% !important;
             background: radial-gradient(circle at 30% 30%, #ffffff 10%, {colors[level]} 80%, #1a1a1a 100%) !important;
             border: 3px solid #8D99AE !important;
             box-shadow: inset -8px -8px 20px rgba(0,0,0,0.6), 5px 5px 15px rgba(0,0,0,0.3) !important;
+            padding: 0 !important;
         }}
         </style>
         """, unsafe_allow_html=True)
+
+        if st.button(" ", key=f"p_{i}", use_container_width=True):
+            st.session_state.last_hz = hz
+            play_audio(note)
 
         st.caption(f"<div style='text-align: center; color: #2c1e16;'><b>{note_label}</b><br>{hz} Hz</div>", unsafe_allow_html=True)
 
