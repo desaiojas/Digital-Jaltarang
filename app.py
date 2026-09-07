@@ -74,9 +74,11 @@ st.markdown("""
         padding-left: 2px !important;
         padding-right: 2px !important;
 
-        white-space: nowrap !important;
+        white-space: normal !important;
         overflow: visible !important;
         text-overflow: clip !important;
+        word-break: keep-all !important;
+        line-height: 1.1 !important;
     }
 
     /* Override Streamlit's text clipping at EVERY level */
@@ -84,10 +86,11 @@ st.markdown("""
     [data-testid="column"] [data-testid="stButton"] > button p,
     [data-testid="column"] [data-testid="stButton"] > button span,
     [data-testid="column"] [data-testid="stButton"] > button div {
-        white-space: nowrap !important;
+        white-space: normal !important;
         overflow: visible !important;
         text-overflow: clip !important;
         max-width: none !important;
+        text-align: center !important;
     }
 
     /* Keep the actual label at normal size */
