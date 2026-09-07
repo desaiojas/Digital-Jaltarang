@@ -284,11 +284,11 @@ title_col, spacer_col, control_col1, control_col2 = st.columns([3, 1, 1, 1])
 with title_col:
     st.markdown("### Bowls (C Major Scale)")
 with control_col1:
-    if st.button("Return to Instructions"):
+    if st.button("Go Home"):
         st.session_state.started = False
         st.rerun()
 with control_col2:
-    if st.button("Reset All Bowls"):
+    if st.button("Reset Bowls"):
         reset()
         st.rerun()
 
