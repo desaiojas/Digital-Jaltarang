@@ -1,11 +1,3 @@
-# Goals for next time:
-# - replace C# bowl
-# - decide how to demonstrate the application (3-4 points; make it simple and clear)
-# (Jan 3rd)
-#
-# - present project with points/features to: Sugnan:jaltarang-teacher (Jaltarang class zoom beginning), William:musical-peer (Lunch time), Madhav:judge-science-fair (Guests over), Prakash:experienced-science-fair (Guests over), Nachiket-musical-teacher (Sangeeta class in-person beginning; coordinate at end of previous class)
-# (when oppurtunity comes)
-
 import os
 import math
 import time
@@ -149,12 +141,12 @@ if not st.session_state.started:
 
 with st.sidebar:
     st.title("Controls")
-    if st.button("🏠 Return to Instructions"):
+    if st.button("Return to Instructions"):
         st.session_state.started = False
         st.rerun()
     
     st.divider()
-    if st.button("🔄 Reset All Bowls"):
+    if st.button("Reset All Bowls"):
         reset()
         st.rerun()
         
