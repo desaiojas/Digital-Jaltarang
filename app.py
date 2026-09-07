@@ -59,13 +59,13 @@ st.markdown("""
         overflow: visible !important;
     }
 
-    [data-testid="column"] [data-testid="stButton"]:nth-of-type(n+2) {
+    [data-testid="column"] [data-testid="stButton"] {
         width: 120px !important;
         min-width: 120px !important;
         max-width: 120px !important;
     }
 
-    [data-testid="column"] [data-testid="stButton"]:nth-of-type(n+2) > button {
+    [data-testid="column"] [data-testid="stButton"] > button {
         width: 120px !important;
         min-width: 120px !important;
         max-width: 120px !important;
@@ -82,10 +82,10 @@ st.markdown("""
     }
 
     /* Override Streamlit's text clipping at EVERY level */
-    [data-testid="column"] [data-testid="stButton"]:nth-of-type(n+2) > button *,
-    [data-testid="column"] [data-testid="stButton"]:nth-of-type(n+2) > button p,
-    [data-testid="column"] [data-testid="stButton"]:nth-of-type(n+2) > button span,
-    [data-testid="column"] [data-testid="stButton"]:nth-of-type(n+2) > button div {
+    [data-testid="column"] [data-testid="stButton"] > button *,
+    [data-testid="column"] [data-testid="stButton"] > button p,
+    [data-testid="column"] [data-testid="stButton"] > button span,
+    [data-testid="column"] [data-testid="stButton"] > button div {
         white-space: normal !important;
         overflow: visible !important;
         text-overflow: clip !important;
@@ -94,34 +94,9 @@ st.markdown("""
     }
 
     /* Keep the actual label at normal size */
-    [data-testid="column"] [data-testid="stButton"]:nth-of-type(n+2) > button p {
+    [data-testid="column"] [data-testid="stButton"] > button p {
         font-size: 14px !important;
         color: #2c1e16 !important;
-    }
-
-    /* ===================================== */
-    /* BOWL BUTTON (the clickable bowl itself) */
-    /* ===================================== */
-
-    [data-testid="column"] [data-testid="stButton"]:nth-of-type(1) > button {
-        width: 100% !important;
-        min-width: unset !important;
-        max-width: unset !important;
-        flex: unset !important;
-        aspect-ratio: 1;
-        height: auto !important;
-        border-radius: 50% !important;
-        padding: 0 !important;
-        cursor: pointer;
-        transition: transform 0.05s ease-in-out;
-    }
-
-    [data-testid="column"] [data-testid="stButton"]:nth-of-type(1) > button:active {
-        transform: scale(0.96);
-    }
-
-    [data-testid="column"] [data-testid="stButton"]:nth-of-type(1) > button p {
-        font-size: 0 !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -216,7 +191,7 @@ if not st.session_state.started:
     st.title("Digital Jaltarang Bowls")
     st.write("This instrument consists of bowls filled with water to create musical notes.")
     st.write("**Instructions:**")
-    st.write("1. Click any bowl to hear its sound.")
+    st.write("1. Click the **Play** button below any bowl to hear its sound.")
     st.write("2. Use **½ Fill** to lower the pitch by a half-step (easily tune the major scale into a minor scale).")
     st.write("3. Use **Full** to lower the pitch by a full step.")
     st.write("4. Use **Empty** to return the bowl to its base note.")
@@ -255,25 +230,28 @@ for i in range(12):
         hz = find_hz(note)
         note_label = get_note_label(note)
 
-        # Per-bowl styling (color + vertical offset) injected fresh each rerun,
-        # targeted at this column's position so each bowl keeps its own look
-        st.markdown(f"""
-        <style>
-            [data-testid="column"]:nth-child({i+1}) [data-testid="stButton"]:nth-of-type(1) > button {{
-                margin-top: {y_offsets[i]}px;
-                background: radial-gradient(circle at 30% 30%, #ffffff 10%, {colors[level]} 80%, #1a1a1a 100%) !important;
-                border: 3px solid #8D99AE !important;
-                box-shadow: inset -8px -8px 20px rgba(0,0,0,0.6), 5px 5px 15px rgba(0,0,0,0.3) !important;
-            }}
-        </style>
-        """, unsafe_allow_html=True)
+        bowl_html = f"""
+        <div style='
+            margin-top: {y_offsets[i]}px; 
+            margin-bottom: 20px;
+            width: 100%; 
+            aspect-ratio: 1; 
+            border-radius: 50%; 
+            background: radial-gradient(circle at 30% 30%, #ffffff 10%, {colors[level]} 80%, #1a1a1a 100%); 
+            border: 3px solid #8D99AE; 
+            box-shadow: inset -8px -8px 20px rgba(0,0,0,0.6), 5px 5px 15px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        '>
+        </div>
+        """
+        st.markdown(bowl_html, unsafe_allow_html=True)
+        st.caption(f"<div style='text-align: center; color: #2c1e16;'><b>{note_label}</b><br>{hz} Hz</div>", unsafe_allow_html=True)
 
-        # The bowl IS the button now — click it to play the note
-        if st.button(" ", key=f"p_{i}", use_container_width=True, help=f"Click to play {note_label}"):
+        if st.button("▶", key=f"p_{i}", use_container_width=True):
             st.session_state.last_hz = hz
             play_audio(note)
-
-        st.caption(f"<div style='text-align: center; color: #2c1e16;'><b>{note_label}</b><br>{hz} Hz</div>", unsafe_allow_html=True)
 
         st.button("½ Fill", key=f"h_{i}", use_container_width=True, on_click=water_change, args=(i, 1))
         st.button("Full", key=f"f_{i}", use_container_width=True, on_click=water_change, args=(i, 2))
