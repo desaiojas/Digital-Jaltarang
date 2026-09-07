@@ -115,13 +115,20 @@ st.markdown("""
         div[data-testid="stHorizontalBlock"] {
             flex-wrap: nowrap !important;
             gap: 1px !important;
-            margin-top: -60px !important; 
+            margin-top: -15px !important; 
         }
 
         /* Hide the massive gap below the reminder on mobile */
         .title-spacer {
             display: none !important;
         }
+
+            /* TARGET ONLY THE LOWER ROWS: Pulls every row AFTER the bowls upward */
+            div[data-testid="stHorizontalBlock"] + div[data-testid="stHorizontalBlock"],
+            div[data-testid="stHorizontalBlock"] ~ div[data-testid="stHorizontalBlock"] {
+                margin-top: -90px !important; 
+            }
+
 
         /* 2. ROOT-CAUSE FIX FOR YANKING EVERYTHING UP
            Streamlit dynamically applies height to 3 layers of wrappers around the iframe. 
@@ -130,9 +137,9 @@ st.markdown("""
         [class*="st-key-bowl_grid"] [data-testid="column"] > div.element-container:nth-child(1),
         [class*="st-key-bowl_grid"] [data-testid="column"] > div.element-container:nth-child(1) > div,
         [class*="st-key-bowl_grid"] [data-testid="column"] > div.element-container:nth-child(1) iframe {
-            height: 90px !important;
-            min-height: 90px !important;
-            max-height: 90px !important;
+            height: 60px !important;
+            min-height: 60px !important;
+            max-height: 60px !important;
         }
 
         /* Small cosmetic tightening between the iframe and the note/Hz caption */
