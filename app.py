@@ -55,10 +55,36 @@ st.markdown("""
     /* BOWL BUTTONS — WIDER, COLUMNS UNCHANGED */
     /* ===================================== */
 
+    /* ===================================== */
+    /* BOWL BUTTONS — WIDER, COLUMNS UNCHANGED */
+    /* ===================================== */
+    
     [data-testid="column"] .stButton > button {
-        width: 115px !important;
-        min-width: 115px !important;
-        max-width: 115px !important;
+        width: 120px !important;
+        min-width: 120px !important;
+        max-width: 120px !important;
+    
+        white-space: nowrap !important;
+        overflow: visible !important;
+        text-overflow: clip !important;
+    }
+    
+    /* Override Streamlit's text clipping at EVERY level */
+    [data-testid="column"] .stButton > button *,
+    [data-testid="column"] .stButton > button p,
+    [data-testid="column"] .stButton > button span,
+    [data-testid="column"] .stButton > button div {
+        white-space: nowrap !important;
+        overflow: visible !important;
+        text-overflow: clip !important;
+        max-width: none !important;
+    }
+    
+    /* Keep the actual label at normal size */
+    [data-testid="column"] .stButton > button p {
+        font-size: 14px !important;
+        color: #2c1e16 !important;
+    }
 
         white-space: nowrap !important;
         overflow: visible !important;
