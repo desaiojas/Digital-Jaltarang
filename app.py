@@ -447,9 +447,9 @@ with st.container(key="bowl_grid"):
 
             st.caption(f"<div style='text-align: center; color: #2c1e16;'><b>{note_label}</b><br>{hz} Hz</div>", unsafe_allow_html=True)
 
-            st.button("½ Fill", key=f"h_{i}", use_container_width=True, on_click=water_change, args=(i, 1))
-            st.button("Full", key=f"f_{i}", use_container_width=True, on_click=water_change, args=(i, 2))
-            st.button("Empty", key=f"e_{i}", use_container_width=True, on_click=water_change, args=(i, 0))
+            st.button("🌗 ½ Fill", key=f"h_{i}", use_container_width=True, on_click=water_change, args=(i, 1))
+            st.button("🌕 Full", key=f"f_{i}", use_container_width=True, on_click=water_change, args=(i, 2))
+            st.button("🌑 Empty", key=f"e_{i}", use_container_width=True, on_click=water_change, args=(i, 0))
 
 st.divider()
 st.markdown(f"### Frequencies: {st.session_state.last_hz} Hz")
