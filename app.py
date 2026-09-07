@@ -101,23 +101,28 @@ st.markdown("""
     }
 
     /* ===================================== */
-    /* MOBILE — HORIZONTAL SCROLLING BOWLS   */
+    /* MOBILE — FORCED HORIZONTAL SCROLLING  */
     /* ===================================== */
 
     @media (max-width: 768px) {
-        /* Target Streamlit's column container to prevent stacking */
-        div[data-testid="stHorizontalBlock"] {
-            flex-wrap: nowrap !important;
-            overflow-x: auto !important;
+        /* 1. Force the container to stay a horizontal row and allow scrolling */
+        [data-testid="stHorizontalBlock"] {
+            display: flex !important;
+            flex-direction: row !important; /* Overrides Streamlit's vertical stacking */
+            flex-wrap: nowrap !important;   /* Prevents wrapping to a new line */
+            overflow-x: auto !important;    /* Enables horizontal swiping */
             overflow-y: hidden !important;
-            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
-            padding-bottom: 15px; /* Room for the scrollbar */
+            -webkit-overflow-scrolling: touch !important; /* Smooth iOS scrolling */
+            padding-bottom: 20px !important; /* Gives breathing room for the scrollbar */
+            width: 100% !important;
         }
         
-        /* Force each column to maintain its width instead of squishing */
-        div[data-testid="column"] {
+        /* 2. Force every single bowl column to stay exactly 120px wide */
+        [data-testid="stHorizontalBlock"] > [data-testid="column"] {
             min-width: 120px !important;
-            flex: 0 0 120px !important;
+            max-width: 120px !important;
+            width: 120px !important;
+            flex: 0 0 120px !important; /* Strictly prevents shrinking or growing */
         }
     }
 </style>
