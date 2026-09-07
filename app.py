@@ -23,7 +23,7 @@ st.markdown("""
         color: #2c1e16 !important;
     }
 
-    /* Normal buttons */
+    /* Default buttons */
     .stButton > button {
         background-color: #f8f9fa !important;
         color: #2c1e16 !important;
@@ -35,45 +35,50 @@ st.markdown("""
         border-color: #2c1e16 !important;
     }
 
-    /* Sidebar buttons — wide */
+    /* ===================================== */
+    /* SIDEBAR BUTTONS — KEEP WIDE           */
+    /* ===================================== */
+
     [data-testid="stSidebar"] .stButton > button {
         min-width: 200px !important;
     }
 
-    /* Start Playing — wide */
+    /* ===================================== */
+    /* START PLAYING — KEEP WIDE             */
+    /* ===================================== */
+
     .stButton > button[kind="primary"] {
         min-width: 170px !important;
     }
 
-    /* ================================= */
-    /* BOWL BUTTONS ONLY                 */
-    /* ================================= */
+    /* ===================================== */
+    /* BOWL BUTTONS — WIDER, COLUMNS UNCHANGED */
+    /* ===================================== */
 
     [data-testid="column"] .stButton > button {
         width: 115px !important;
         min-width: 115px !important;
         max-width: 115px !important;
-    }
 
-    /* Stop Streamlit from shortening "Empty" to "Em..." */
-    [data-testid="column"] .stButton > button > div {
-        width: 100% !important;
-        max-width: none !important;
-        overflow: visible !important;
-    }
-
-    [data-testid="column"] .stButton > button > div > div {
-        width: max-content !important;
-        max-width: none !important;
-        overflow: visible !important;
-    }
-
-    [data-testid="column"] .stButton > button p {
-        width: max-content !important;
-        max-width: none !important;
-        overflow: visible !important;
         white-space: nowrap !important;
+        overflow: visible !important;
         text-overflow: clip !important;
+    }
+
+    /* Override Streamlit's text clipping at EVERY level */
+    [data-testid="column"] .stButton > button *,
+    [data-testid="column"] .stButton > button p,
+    [data-testid="column"] .stButton > button span,
+    [data-testid="column"] .stButton > button div {
+        white-space: nowrap !important;
+        overflow: visible !important;
+        text-overflow: clip !important;
+        max-width: none !important;
+    }
+
+    /* Keep the actual label at normal size */
+    [data-testid="column"] .stButton > button p {
+        font-size: 14px !important;
         color: #2c1e16 !important;
     }
 </style>
