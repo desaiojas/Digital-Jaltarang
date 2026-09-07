@@ -3,6 +3,7 @@ import math
 import time
 import base64
 import streamlit as st
+import streamlit.components.v1 as components
 
 st.set_page_config(page_title="Digital Jaltarang", layout="wide")
 
@@ -191,7 +192,7 @@ if not st.session_state.started:
     st.title("Digital Jaltarang Bowls")
     st.write("This instrument consists of bowls filled with water to create musical notes.")
     st.write("**Instructions:**")
-    st.write("1. Click the **Play** button below any bowl to hear its sound.")
+    st.write("1. Click any **bowl** to hear its sound.")
     st.write("2. Use **½ Fill** to lower the pitch by a half-step (easily tune the major scale into a minor scale).")
     st.write("3. Use **Full** to lower the pitch by a full step.")
     st.write("4. Use **Empty** to return the bowl to its base note.")
@@ -243,30 +244,67 @@ for i in range(12):
         hz = find_hz(note)
         note_label = get_note_label(note)
 
-        st.markdown(f"""
-        <style>
-        [data-testid="stButton"] > button[aria-label=" "] {{
-            margin-top: {y_offsets[i]}px !important;
-            margin-bottom: 20px !important;
-            width: 120px !important;
-            min-width: 120px !important;
-            max-width: 120px !important;
-            height: 120px !important;
-            min-height: 120px !important;
-            max-height: 120px !important;
-            aspect-ratio: 1 / 1 !important;
-            border-radius: 50% !important;
-            background: radial-gradient(circle at 30% 30%, #ffffff 10%, {colors[level]} 80%, #1a1a1a 100%) !important;
-            border: 3px solid #8D99AE !important;
-            box-shadow: inset -8px -8px 20px rgba(0,0,0,0.6), 5px 5px 15px rgba(0,0,0,0.3) !important;
-            padding: 0 !important;
-        }}
-        </style>
-        """, unsafe_allow_html=True)
+        try:
+            with open(note, "rb") as f:
+                audio_b64 = base64.b64encode(f.read()).decode()
+        except FileNotFoundError:
+            audio_b64 = ""
 
-        if st.button(" ", key=f"p_{i}", use_container_width=True):
-            st.session_state.last_hz = hz
-            play_audio(note)
+        bowl_html = f"""
+        <style>
+            html, body {{
+                margin: 0;
+                padding: 0;
+                background: transparent;
+                overflow: hidden;
+            }}
+
+            .bowl-container {{
+                width: 120px;
+                height: {y_offsets[i] + 140}px;
+                margin: 0;
+                padding: 0;
+            }}
+
+            .bowl {{
+                margin-top: {y_offsets[i]}px;
+                margin-bottom: 20px;
+                width: 120px;
+                height: 120px;
+                border-radius: 50%;
+                background: radial-gradient(circle at 30% 30%, #ffffff 10%, {colors[level]} 80%, #1a1a1a 100%);
+                border: 3px solid #8D99AE;
+                box-shadow: inset -8px -8px 20px rgba(0,0,0,0.6), 5px 5px 15px rgba(0,0,0,0.3);
+                cursor: pointer;
+                box-sizing: border-box;
+                transition: transform 0.08s ease;
+            }}
+
+            .bowl:active {{
+                transform: scale(0.97);
+            }}
+        </style>
+
+        <div class="bowl-container">
+            <div class="bowl" id="bowl"></div>
+        </div>
+
+        <script>
+            const bowl = document.getElementById("bowl");
+            const audio = new Audio("data:audio/wav;base64,{audio_b64}");
+
+            bowl.addEventListener("click", function() {{
+                audio.currentTime = 0;
+                audio.play();
+            }});
+        </script>
+        """
+
+        components.html(
+            bowl_html,
+            height=y_offsets[i] + 145,
+            scrolling=False
+        )
 
         st.caption(f"<div style='text-align: center; color: #2c1e16;'><b>{note_label}</b><br>{hz} Hz</div>", unsafe_allow_html=True)
 
