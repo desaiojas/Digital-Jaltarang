@@ -18,20 +18,26 @@ st.markdown("""
         background-color: #b5956c;
     }
     
-    /* Ensure all main text and lists stay dark brown against the light wood */
+    /* Ensure all main text and lists stay dark brown for readability */
     h1, h2, h3, p, div.stMarkdown, li {
         color: #2c1e16 !important;
     }
     
-    /* Safely force buttons to be light with dark text for Dark Mode compatibility */
-    /* ZERO border, margin, or padding overrides to protect Streamlit's natural layout */
+    /* Dark Mode adaptation for buttons (colors only, no structural changes) */
     .stButton > button {
         background-color: #f8f9fa !important;
         color: #2c1e16 !important;
+        border: 1px solid #b5956c !important;
     }
     
     .stButton > button:hover {
         background-color: #ffffff !important;
+        border-color: #2c1e16 !important;
+    }
+    
+    /* Prevent "Em..." truncation by slightly reducing text size ONLY inside the columns */
+    [data-testid="column"] .stButton > button p {
+        font-size: 13px !important;
     }
 </style>
 """, unsafe_allow_html=True)
