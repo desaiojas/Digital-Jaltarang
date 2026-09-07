@@ -18,12 +18,12 @@ st.markdown("""
         background-color: #b5956c;
     }
     
-    /* Ensure all main text and lists stay dark brown for readability */
+    /* Main text */
     h1, h2, h3, p, div.stMarkdown, li {
         color: #2c1e16 !important;
     }
     
-    /* Default buttons — KEEP ORIGINAL BOWL BUTTON SIZING */
+    /* Default buttons */
     .stButton > button {
         background-color: #f8f9fa !important;
         color: #2c1e16 !important;
@@ -35,14 +35,36 @@ st.markdown("""
         border-color: #2c1e16 !important;
     }
 
-    /* ONLY widen the sidebar buttons */
+    /* ============================= */
+    /* SIDEBAR BUTTONS — WIDE        */
+    /* ============================= */
     [data-testid="stSidebar"] .stButton > button {
         min-width: 200px !important;
     }
 
-    /* ONLY widen the Start Playing button */
+    /* ============================= */
+    /* START PLAYING — WIDE          */
+    /* ============================= */
     .stButton > button[kind="primary"] {
         min-width: 170px !important;
+    }
+
+    /* ============================= */
+    /* BOWL BUTTONS — WIDER          */
+    /* ============================= */
+    [data-testid="column"] .stButton > button {
+        width: calc(100% + 14px) !important;
+        margin-left: -7px !important;
+        margin-right: -7px !important;
+        white-space: nowrap !important;
+        overflow: visible !important;
+        text-overflow: clip !important;
+    }
+    
+    [data-testid="column"] .stButton > button p {
+        white-space: nowrap !important;
+        overflow: visible !important;
+        text-overflow: clip !important;
     }
 </style>
 """, unsafe_allow_html=True)
