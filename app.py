@@ -23,7 +23,7 @@ st.markdown("""
         color: #2c1e16 !important;
     }
     
-    /* Dark Mode adaptation for buttons (colors only, no structural changes) */
+    /* Dark Mode adaptation for buttons (colors only, preserving native sizing) */
     .stButton > button {
         background-color: #f8f9fa !important;
         color: #2c1e16 !important;
@@ -33,11 +33,6 @@ st.markdown("""
     .stButton > button:hover {
         background-color: #ffffff !important;
         border-color: #2c1e16 !important;
-    }
-    
-    /* Prevent "Em..." truncation by slightly reducing text size ONLY inside the columns */
-    [data-testid="column"] .stButton > button p {
-        font-size: 13px !important;
     }
 </style>
 """, unsafe_allow_html=True)
