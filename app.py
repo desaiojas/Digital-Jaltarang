@@ -4,9 +4,6 @@ import time
 import base64
 import streamlit as st
 
-st.set_page_config(page_title="Digital Jaltarang Bowls", layout="wide")
-
-# Custom CSS for Wooden Background Theme & Typography
 st.markdown("""
 <style>
     /* Main app background gradient */
@@ -19,9 +16,22 @@ st.markdown("""
         background-color: #b5956c;
     }
     
-    /* Ensure all main text stays dark brown/black for readability */
-    h1, h2, h3, p, div.stMarkdown, .stSelectbox label {
+    /* Ensure all main text stays dark brown for readability against the wood */
+    h1, h2, h3, p, div.stMarkdown {
         color: #2c1e16 !important;
+    }
+    
+    /* Force buttons to be light with dark text in both Light and Dark themes */
+    .stButton > button {
+        background-color: #f8f9fa !important;
+        color: #2c1e16 !important;
+        border: 1px solid #b5956c !important;
+    }
+    
+    .stButton > button:hover {
+        background-color: #ffffff !important;
+        border-color: #2c1e16 !important;
+        color: #000000 !important;
     }
 </style>
 """, unsafe_allow_html=True)
