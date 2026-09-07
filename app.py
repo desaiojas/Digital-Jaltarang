@@ -18,33 +18,68 @@ st.markdown("""
         background-color: #b5956c;
     }
     
-    /* Ensure all main text and lists stay dark brown for readability */
+    /* Main text */
     h1, h2, h3, p, div.stMarkdown, li {
         color: #2c1e16 !important;
     }
     
-    /* Buttons */
+    /* ============================= */
+    /* GENERAL BUTTONS               */
+    /* ============================= */
     .stButton > button {
         background-color: #f8f9fa !important;
         color: #2c1e16 !important;
         border: 1px solid #b5956c !important;
         font-size: 14px !important;
-        padding-left: 2px !important;
-        padding-right: 2px !important;
     }
 
-    /* Prevent Streamlit from changing button text to "Em..." */
-    .stButton > button p {
-        color: #2c1e16 !important;
+    .stButton > button:hover {
+        background-color: #ffffff !important;
+        border-color: #2c1e16 !important;
+    }
+
+    /* ============================= */
+    /* SIDEBAR BUTTONS               */
+    /* Keep these wide */
+    /* ============================= */
+    [data-testid="stSidebar"] .stButton > button {
+        width: auto !important;
+        min-width: 200px !important;
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+    }
+
+    /* ============================= */
+    /* INSTRUCTION PAGE BUTTON       */
+    /* Keep Start Playing wide */
+    /* ============================= */
+    .stButton > button[kind="primary"] {
+        min-width: 170px !important;
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+    }
+
+    /* ============================= */
+    /* BOWL BUTTONS                  */
+    /* Keep current narrow sizing */
+    /* ============================= */
+    [data-testid="column"] .stButton > button {
+        width: 100% !important;
+        min-width: 0 !important;
+        padding-left: 2px !important;
+        padding-right: 2px !important;
         white-space: nowrap !important;
         overflow: visible !important;
         text-overflow: clip !important;
         font-size: 14px !important;
     }
-    
-    .stButton > button:hover {
-        background-color: #ffffff !important;
-        border-color: #2c1e16 !important;
+
+    [data-testid="column"] .stButton > button p {
+        color: #2c1e16 !important;
+        white-space: nowrap !important;
+        overflow: visible !important;
+        text-overflow: clip !important;
+        font-size: 14px !important;
     }
 </style>
 """, unsafe_allow_html=True)
