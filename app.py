@@ -13,7 +13,7 @@ import os
 import math
 import streamlit as st
 
-# Streamlit Setup (Replaces Pygame Init)
+# Streamlit Setup
 st.set_page_config(page_title="Jaltarang", layout="wide")
 
 WHITE = "#FFFFFF"
@@ -41,7 +41,7 @@ for m4a_file in m4a_files:
     print(f"Converted {m4a_file} to {wav_file}")
 """
 
-# Sounds (Adapted for Streamlit Audio Paths)
+# Sounds
 BL = "C Jaltarang.wav"
 C = "C Jaltarang.wav"
 CS = "C# Jaltarang.wav"
@@ -75,7 +75,7 @@ if 'notes' not in st.session_state:
 if 'colors' not in st.session_state:
     st.session_state.colors = [WHITE]*12
 if 'water_states' not in st.session_state:
-    st.session_state.water_states = [0]*12 # 0: empty, 1: half, 2: full
+    st.session_state.water_states = [0]*12
 
 # Intro / Landing Page
 if not st.session_state.started:
@@ -91,10 +91,10 @@ if not st.session_state.started:
         st.rerun()
     st.stop()
 
-# Circle coordinates and drawing (Adapted for Streamlit Semicircle layout)
+# Circle coordinates and drawing
 def draw():
     cols = st.columns(12)
-    # Semicircle Y-offsets to simulate arc
+    # Semicircle Y-offsets
     y_offsets = [0, 40, 70, 90, 100, 105, 105, 100, 90, 70, 40, 0]
     
     for i in range(12):
@@ -106,10 +106,9 @@ def draw():
             st.markdown(f"<div style='margin-top: {y_offsets[i]}px; width: 60px; height: 60px; border-radius: 50%; background-color: {color}; border: 3px solid black; box-shadow: 2px 2px 5px gray;'></div>", unsafe_allow_html=True)
             st.caption(f"{hz} hz")
             
-            # Replaced Pygame mouse clicks with Streamlit audio buttons
-            st.audio(note.replace('#', 'S'), format="audio/wav")
+            # Direct exact filename match based on GitHub repo
+            st.audio(note, format="audio/wav")
             
-            # New Water Buttons
             if st.button("½ Fill", key=f"h_{i}"):
                 water_change(i, 1)
             if st.button("Full", key=f"f_{i}"):
@@ -147,21 +146,20 @@ def find_hz(note):
   if note == FSH: return 740
   if note == GH:  return 784
 
-# Water Change (Updated logic for step-downs)
+# Water Change
 def water_change(ind, fill_level):
     base_notes = [C,D,E,F,G,A,B,CH,DH,EH,FH,GH]
     base_note = base_notes[ind]
     
     try:
         base_idx = ALL_PITCHES.index(base_note)
-        # 1 = half fill (1 step down), 2 = full fill (2 steps down)
         new_idx = max(0, base_idx - fill_level) 
         
         st.session_state.notes[ind] = ALL_PITCHES[new_idx]
         st.session_state.water_states[ind] = fill_level
         
         if fill_level == 1:
-            st.session_state.colors[ind] = "#ADD8E6" # Light Blue
+            st.session_state.colors[ind] = "#ADD8E6"
         elif fill_level == 2:
             st.session_state.colors[ind] = BLUE
         else:
@@ -184,7 +182,6 @@ high_jingle_bells = [EH, EH, EH, "w", EH, EH, EH, "w", EH, GH, CH, DH, EH, "w", 
 
 songs = [hot_cross_buns, mary, twinkle_twinkle, high_hot_cross_buns, high_mary, jingle_bells, high_jingle_bells]
 
-# Top Controls
 st.markdown("### Digital Jaltarang Controls")
 col1, col2 = st.columns(2)
 with col1:
