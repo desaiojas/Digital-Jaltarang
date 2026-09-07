@@ -23,7 +23,7 @@ st.markdown("""
         color: #2c1e16 !important;
     }
     
-    /* Default buttons */
+    /* Normal buttons */
     .stButton > button {
         background-color: #f8f9fa !important;
         color: #2c1e16 !important;
@@ -36,7 +36,7 @@ st.markdown("""
     }
 
     /* ============================= */
-    /* SIDEBAR BUTTONS — WIDE        */
+    /* SIDEBAR — WIDE                */
     /* ============================= */
     [data-testid="stSidebar"] .stButton > button {
         min-width: 200px !important;
@@ -50,20 +50,26 @@ st.markdown("""
     }
 
     /* ============================= */
-    /* BOWL BUTTONS — WIDER          */
+    /* BOWL BUTTONS — WIDER ONLY     */
     /* ============================= */
     [data-testid="column"] .stButton > button {
-        width: calc(100% + 14px) !important;
-        margin-left: -7px !important;
-        margin-right: -7px !important;
+        min-width: 115px !important;
+        width: 115px !important;
         white-space: nowrap !important;
         overflow: visible !important;
         text-overflow: clip !important;
     }
-    
-    [data-testid="column"] .stButton > button p {
-        white-space: nowrap !important;
+
+    /* Prevent Streamlit's inner text container from clipping */
+    [data-testid="column"] .stButton > button > div {
+        width: 100% !important;
         overflow: visible !important;
+        white-space: nowrap !important;
+    }
+
+    [data-testid="column"] .stButton > button p {
+        overflow: visible !important;
+        white-space: nowrap !important;
         text-overflow: clip !important;
     }
 </style>
