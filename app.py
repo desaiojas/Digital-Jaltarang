@@ -115,7 +115,7 @@ st.markdown("""
         div[data-testid="stHorizontalBlock"] {
             flex-wrap: nowrap !important;
             gap: 1px !important;
-            margin-top: -15px !important; 
+            margin-top: -60px !important; 
         }
 
         /* Hide the massive gap below the reminder on mobile */
