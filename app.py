@@ -126,7 +126,7 @@ st.markdown("""
             /* TARGET ONLY THE LOWER ROWS: Pulls every row AFTER the bowls upward */
             div[data-testid="stHorizontalBlock"] + div[data-testid="stHorizontalBlock"],
             div[data-testid="stHorizontalBlock"] ~ div[data-testid="stHorizontalBlock"] {
-                margin-top: -100000000px !important; 
+                margin-top: -90px !important; 
             }
 
 
@@ -137,9 +137,9 @@ st.markdown("""
         [class*="st-key-bowl_grid"] [data-testid="column"] > div.element-container:nth-child(1),
         [class*="st-key-bowl_grid"] [data-testid="column"] > div.element-container:nth-child(1) > div,
         [class*="st-key-bowl_grid"] [data-testid="column"] > div.element-container:nth-child(1) iframe {
-            height: 60px !important;
-            min-height: 60px !important;
-            max-height: 60px !important;
+            height: 30px !important;
+            min-height: 30px !important;
+            max-height: 30px !important;
         }
 
         /* Small cosmetic tightening between the iframe and the note/Hz caption */
