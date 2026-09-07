@@ -99,6 +99,11 @@ st.markdown("""
         color: #2c1e16 !important;
     }
 
+    /* Desktop Spacing */
+    .title-spacer {
+        margin-top: 25px;
+    }
+
     /* ===================================== */
     /* MOBILE SHRINK-TO-FIT SOLUTION         */
     /* ===================================== */
@@ -108,9 +113,15 @@ st.markdown("""
         div[data-testid="stHorizontalBlock"] {
             flex-wrap: nowrap !important;
             gap: 1px !important;
+            margin-top: -15px !important; /* Pulls the bowls up closer to the title */
+        }
+
+        /* Hide the massive gap below the reminder on mobile */
+        .title-spacer {
+            display: none !important;
         }
         
-        /* 2. Unlock the hardcoded 120px widths so they can squish */
+        /* 2. Unlock the hardcoded widths so they can squish */
         div[data-testid="column"] {
             min-width: 0px !important;
             max-width: none !important;
@@ -131,16 +142,32 @@ st.markdown("""
             max-width: none !important;
             flex: 1 1 auto !important;
             padding: 2px 0px !important;
-            min-height: 0px !important;
+            min-height: 28px !important; /* Ensure they have height for emojis */
         }
         
-        /* 4. Force shrink button fonts heavily - Match specificity of desktop rule to override it */
+        /* 4. CSS Emoji Injection - Hides text and replaces with emojis */
+        
+        /* Hide all button text */
         div[data-testid="column"] [data-testid="stButton"] > button p {
-            font-size: 8px !important;
-            line-height: 1.0 !important;
+            font-size: 0px !important; 
             margin: 0 !important;
             padding: 0 !important;
-            -webkit-text-size-adjust: none !important; /* Stops iOS from auto-inflating tiny text */
+        }
+        
+        /* Button 1: ½ Fill -> 🌗 */
+        div[data-testid="column"] div.element-container:nth-of-type(3) [data-testid="stButton"] button p::before {
+            content: "🌗";
+            font-size: 16px !important;
+        }
+        /* Button 2: Full -> 🌕 */
+        div[data-testid="column"] div.element-container:nth-of-type(4) [data-testid="stButton"] button p::before {
+            content: "🌕";
+            font-size: 16px !important;
+        }
+        /* Button 3: Empty -> 🌑 */
+        div[data-testid="column"] div.element-container:nth-of-type(5) [data-testid="stButton"] button p::before {
+            content: "🌑";
+            font-size: 16px !important;
         }
 
         /* 5. Force shrink captions (Hz text) */
@@ -244,9 +271,9 @@ if not st.session_state.started:
     st.write("This instrument consists of bowls filled with water to create musical notes.")
     st.write("**Instructions:**")
     st.write("1. Click any **bowl** to hear its sound.")
-    st.write("2. Use **½ Fill** to lower the pitch by a half-step (easily tune the major scale into a minor scale).")
-    st.write("3. Use **Full** to lower the pitch by a full step.")
-    st.write("4. Use **Empty** to return the bowl to its base note.")
+    st.write("2. Use **½ Fill / 🌗** to lower the pitch by a half-step (easily tune the major scale into a minor scale).")
+    st.write("3. Use **Full / 🌕** to lower the pitch by a full step.")
+    st.write("4. Use **Empty / 🌑** to return the bowl to its base note.")
     st.write("5. Watch the physical sound waves react in real-time as you play!")
     if st.button("Start Playing", type="primary"):
         st.session_state.started = True
@@ -278,7 +305,7 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-st.markdown("<div style='margin-top: 25px;'></div>", unsafe_allow_html=True)
+st.markdown("<div class='title-spacer'></div>", unsafe_allow_html=True)
 st.session_state.audio_player = st.empty() 
 
 # 12 bowls layout
@@ -350,15 +377,14 @@ for i in range(12):
                     transform: translateX(-50%) scale(0.97);
                 }}
                 
-                /* 
-                  Mobile Size: Only triggers when the column iframe is squeezed tighter than 80px.
-                */
+                /* Mobile Size overrides */
                 @media (max-width: 80px) {{
                     .bowl {{
                         width: 36px !important;
                         height: 36px !important;
-                        top: auto !important; /* Discards the desktop vertical offset */
-                        bottom: 0px !important; /* Forces the bowl all the way down to close the gap */
+                        /* Restores the curve (0.4 multiplier) but pushes the entire curve 100px downwards */
+                        top: calc(100px + ({y_offsets[i]}px * 0.4)) !important; 
+                        bottom: auto !important; 
                         border-width: 2px !important;
                         box-shadow: 
                             inset -3px -3px 8px rgba(0,0,0,0.6),
@@ -404,5 +430,5 @@ for i in range(12):
         st.button("Empty", key=f"e_{i}", use_container_width=True, on_click=water_change, args=(i, 0))
 
 st.divider()
-st.markdown(f"### Frequency Visualizer: {st.session_state.last_hz} Hz")
+st.markdown(f"### Frequencies: {st.session_state.last_hz} Hz")
 st.line_chart(generate_wave(st.session_state.last_hz), height=200, use_container_width=True)
