@@ -53,14 +53,24 @@ st.markdown("""
     }
 
     /* ===================================== */
-    /* TEXT FORCING INSIDE COLUMNS           */
+    /* DEFAULT DESKTOP BOWL LAYOUT           */
     /* ===================================== */
 
     [data-testid="column"] {
         overflow: visible !important;
     }
 
+    [data-testid="column"] [data-testid="stButton"] {
+        width: 120px !important;
+        min-width: 120px !important;
+        max-width: 120px !important;
+    }
+
     [data-testid="column"] [data-testid="stButton"] > button {
+        width: 120px !important;
+        min-width: 120px !important;
+        max-width: 120px !important;
+        flex: 0 0 120px !important;
         box-sizing: border-box !important;
         padding-left: 2px !important;
         padding-right: 2px !important;
@@ -87,6 +97,53 @@ st.markdown("""
     [data-testid="column"] [data-testid="stButton"] > button p {
         font-size: 14px !important;
         color: #2c1e16 !important;
+    }
+
+    /* ===================================== */
+    /* MOBILE SHRINK-TO-FIT SOLUTION         */
+    /* ===================================== */
+
+    @media (max-width: 768px) {
+        /* 1. Force columns to stay in one row */
+        div[data-testid="stHorizontalBlock"] {
+            flex-wrap: nowrap !important;
+            gap: 2px !important;
+        }
+        
+        /* 2. Unlock the hardcoded 120px widths so they can squish */
+        div[data-testid="column"] {
+            min-width: 0px !important;
+            max-width: none !important;
+            width: auto !important;
+            flex: 1 1 0% !important;
+        }
+
+        div[data-testid="column"] [data-testid="stButton"] {
+            width: 100% !important;
+            min-width: 0px !important;
+            max-width: none !important;
+        }
+
+        /* 3. Shrink the buttons dramatically to fit */
+        div[data-testid="column"] [data-testid="stButton"] > button {
+            width: 100% !important;
+            min-width: 0px !important;
+            max-width: none !important;
+            flex: 1 1 auto !important;
+            padding: 4px 0px !important;
+        }
+        
+        /* 4. Shrink button fonts */
+        div[data-testid="column"] [data-testid="stButton"] > button p {
+            font-size: 9px !important;
+            line-height: 1.0 !important;
+        }
+
+        /* 5. Shrink captions (Hz text) */
+        div[data-testid="stCaptionContainer"] * {
+            font-size: 9px !important;
+            line-height: 1.1 !important;
+        }
     }
 </style>
 """, unsafe_allow_html=True)
@@ -286,6 +343,19 @@ for i in range(12):
                 .bowl:active {{
                     transform: translateX(-50%) scale(0.97);
                 }}
+                
+                /* When Streamlit squishes the column iframe to less than 150px, shrink the bowl graphic */
+                @media (max-width: 150px) {{
+                    .bowl {{
+                        width: 24px !important;
+                        height: 24px !important;
+                        top: calc({y_offsets[i]}px * 0.4) !important;
+                        border-width: 1px !important;
+                        box-shadow: 
+                            inset -3px -3px 8px rgba(0,0,0,0.6),
+                            2px 2px 5px rgba(0,0,0,0.3) !important;
+                    }}
+                }}
             </style>
         </head>
 
@@ -327,44 +397,3 @@ for i in range(12):
 st.divider()
 st.markdown(f"### Frequency Visualizer: {st.session_state.last_hz} Hz")
 st.line_chart(generate_wave(st.session_state.last_hz), height=200, use_container_width=True)
-
-# ==========================================================
-# JAVASCRIPT INJECTION: ABSOLUTE OVERRIDE FOR MOBILE SCROLL
-# ==========================================================
-components.html(
-    """
-    <script>
-        // Wait briefly for Streamlit to finish rendering the DOM
-        setTimeout(() => {
-            const parent = window.parent.document;
-            
-            // Find all blocks that act as layout containers
-            const containers = parent.querySelectorAll('div[data-testid="stHorizontalBlock"], div[data-testid="stVerticalBlock"]');
-            
-            containers.forEach(container => {
-                // Find how many columns are inside this specific container
-                const columns = container.querySelectorAll(':scope > div[data-testid="column"]');
-                
-                // If it has more than 5 columns, it's definitively our 12-bowl layout
-                if (columns.length > 5) {
-                    // Force the parent container to allow horizontal scrolling
-                    container.style.setProperty('display', 'flex', 'important');
-                    container.style.setProperty('flex-direction', 'row', 'important');
-                    container.style.setProperty('flex-wrap', 'nowrap', 'important');
-                    container.style.setProperty('overflow-x', 'auto', 'important');
-                    container.style.setProperty('overflow-y', 'hidden', 'important');
-                    container.style.setProperty('padding-bottom', '20px', 'important');
-                    
-                    // Force every bowl column to stay exactly 120px wide so they overflow
-                    columns.forEach(col => {
-                        col.style.setProperty('min-width', '120px', 'important');
-                        col.style.setProperty('max-width', '120px', 'important');
-                        col.style.setProperty('flex', '0 0 120px', 'important');
-                    });
-                }
-            });
-        }, 500); // 500ms delay ensures elements exist before modifying
-    </script>
-    """,
-    height=0, width=0
-)
