@@ -123,23 +123,16 @@ st.markdown("""
             display: none !important;
         }
 
-        /* 2. ROOT-CAUSE FIX for the "dead space" below the bowls.
-           The bowl embed (components.html) is a fixed-height iframe
-           (190px), which is needed on desktop for the full-size bowl
-           graphic. On mobile the bowl graphic itself shrinks down to
-           ~36px (see the .bowl media query below), but the iframe's
-           outer box still reserves the full 190px of vertical space,
-           which is what was pushing the caption / fill-buttons /
-           divider / frequency chart down the page.
-           Shrinking the iframe's rendered height here means the
-           browser naturally reflows EVERYTHING that comes after it
-           (caption, the 3 buttons, the divider, and the frequency
-           chart at the bottom of the page) upward automatically —
-           no need to hand-tune a separate negative margin for each
-           element. This is scoped to the bowl grid container only,
-           so the header row (Go Home / Reset Bowls) is untouched. */
-        [class*="st-key-bowl_grid"] [data-testid="column"] iframe {
-            height: 95px !important;
+        /* 2. ROOT-CAUSE FIX FOR YANKING EVERYTHING UP
+           Streamlit dynamically applies height to 3 layers of wrappers around the iframe. 
+           We crush all of them to 90px. This completely alters the document flow, natively 
+           dragging the captions, fill-buttons, divider, and frequency chart upward by 100px. */
+        [class*="st-key-bowl_grid"] [data-testid="column"] > div.element-container:nth-child(1),
+        [class*="st-key-bowl_grid"] [data-testid="column"] > div.element-container:nth-child(1) > div,
+        [class*="st-key-bowl_grid"] [data-testid="column"] > div.element-container:nth-child(1) iframe {
+            height: 90px !important;
+            min-height: 90px !important;
+            max-height: 90px !important;
         }
 
         /* Small cosmetic tightening between the iframe and the note/Hz caption */
@@ -161,8 +154,7 @@ st.markdown("""
             max-width: none !important;
         }
 
-        /* 4. TRUE EMOJI REPLACEMENT (bowl grid only, so the header
-           buttons like "Go Home" / "Reset Bowls" keep their text) */
+        /* 4. TRUE EMOJI REPLACEMENT (bowl grid only, keeping header buttons untouched) */
 
         /* Visually obliterate the inner text div so Streamlit can't override it */
         [class*="st-key-bowl_grid"] [data-testid="stButton"] > button > div {
@@ -182,20 +174,18 @@ st.markdown("""
             justify-content: center !important;
         }
 
-        /* Mount emojis using each button's own Streamlit `key`
-           (h_/f_/e_) instead of guessing sibling position — this is
-           robust no matter how Streamlit nests things internally. */
+        /* Mount emojis using each button's own Streamlit `key` (h_/f_/e_) */
         [class*="st-key-bowl_grid"] [class*="st-key-h_"] button::after {
             content: "🌗";
-            font-size: 16px;
+            font-size: 18px;
         }
         [class*="st-key-bowl_grid"] [class*="st-key-f_"] button::after {
             content: "🌕";
-            font-size: 16px;
+            font-size: 18px;
         }
         [class*="st-key-bowl_grid"] [class*="st-key-e_"] button::after {
             content: "🌑";
-            font-size: 16px;
+            font-size: 18px;
         }
 
         /* 5. Force shrink captions (Hz text) */
@@ -327,15 +317,13 @@ st.markdown("<div class='title-spacer'></div>", unsafe_allow_html=True)
 st.session_state.audio_player = st.empty() 
 
 # 12 bowls layout
-# Wrapped in a keyed container so the mobile-only CSS above can target
-# *just* this section (iframe height, emoji buttons) without touching
-# the header row's "Go Home" / "Reset Bowls" buttons.
+# Wrapped in a keyed container so the mobile-only CSS above can target it directly
 with st.container(key="bowl_grid"):
     cols = st.columns(12, gap="small")
     y_offsets = [80, 76, 68, 52, 30, 0, 0, 30, 52, 68, 76, 80]
 
     # 0: Ceramic White/Gray, 1: Vibrant Aqua, 2: Deep Sapphire
-    colors = {0: "#F8F9FA", 1: "#00B4D8", 2: "#03045E"}
+    colors = {0: "#F8F9FA", 1: "#00B4D8", 2: "#03045E"} 
 
     for i in range(12):
         with cols[i]:
@@ -404,7 +392,7 @@ with st.container(key="bowl_grid"):
                         .bowl {{
                             width: 36px !important;
                             height: 36px !important;
-                            /* The 0.4 multiplier shrinks the vertical curve so the bowls don't clip */
+                            /* Because the parent container is crushed to 90px height, we must reset the top curve calculation to 10px so the bowl remains visible inside the squashed iframe. */
                             top: calc(10px + ({y_offsets[i]}px * 0.4)) !important; 
                             bottom: auto !important; 
                             border-width: 2px !important;
