@@ -445,6 +445,33 @@ with st.container(key="bowl_grid"):
             st.button("🌕 Full", key=f"f_{i}", use_container_width=True, on_click=water_change, args=(i, 2))
             st.button("🌑 Empty", key=f"e_{i}", use_container_width=True, on_click=water_change, args=(i, 0))
 
+components.html(
+    """
+    <script>
+    function pullLowerRowsUp() {
+        const doc = window.parent.document;
+        const win = window.parent;
+        const bowlGrid = doc.querySelector('[class*="st-key-bowl_grid"]');
+        if (!bowlGrid) return;
+        let el = bowlGrid.nextElementSibling;
+        while (el) {
+            if (win.innerWidth <= 768) {
+                el.style.setProperty('margin-top', '-90px', 'important');
+            } else {
+                el.style.removeProperty('margin-top');
+            }
+            el = el.nextElementSibling;
+        }
+    }
+    pullLowerRowsUp();
+    window.parent.addEventListener('resize', pullLowerRowsUp);
+    const observer = new MutationObserver(pullLowerRowsUp);
+    observer.observe(window.parent.document.body, { childList: true, subtree: true });
+    </script>
+    """,
+    height=0,
+)
+
 st.divider()
 st.markdown(f"### Frequencies: {st.session_state.last_hz} Hz")
 st.line_chart(generate_wave(st.session_state.last_hz), height=200, use_container_width=True)
