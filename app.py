@@ -109,16 +109,16 @@ st.markdown("""
     /* ===================================== */
 
     @media (max-width: 768px) {
-        /* 1. Force columns to stay in one row */
+        /* 1. Force columns to stay in one row & pull them up heavily */
         div[data-testid="stHorizontalBlock"] {
             flex-wrap: nowrap !important;
             gap: 1px !important;
-            margin-top: -45px !important; /* Heavily pulls the bowls and buttons up to close the gap */
+            margin-top: -65px !important; /* Yank the entire bowl section up to close the gap */
             position: relative;
             z-index: 10;
         }
 
-        /* Hide the massive gap below the reminder on mobile */
+        /* Destroy the spacing gap on mobile */
         .title-spacer {
             display: none !important;
         }
@@ -144,37 +144,40 @@ st.markdown("""
             max-width: none !important;
             flex: 1 1 auto !important;
             padding: 2px 0px !important;
-            min-height: 28px !important; /* Ensure they have height for emojis */
+            min-height: 32px !important; /* Ensure height for the emoji */
         }
         
-        /* 4. CSS Emoji Injection - Hides text and replaces with emojis */
+        /* 4. TRUE EMOJI REPLACEMENT */
         
-        /* Hide all button text structurally */
-        div[data-testid="column"] [data-testid="stButton"] > button p {
-            visibility: hidden !important; 
-            font-size: 0px !important; 
-            margin: 0 !important;
-            padding: 0 !important;
-            height: 18px; /* Maintain physical space for the emoji */
+        /* Forcefully delete Streamlit's inner text container from the DOM visually */
+        div[data-testid="column"] [data-testid="stButton"] > button > div {
+            display: none !important; 
         }
         
-        /* Ensure the injected emoji is fully visible */
-        div[data-testid="column"] [data-testid="stButton"] > button p::before {
-            visibility: visible !important;
-            font-size: 16px !important;
+        /* Inject the emojis directly into the empty button shell */
+        div[data-testid="column"] [data-testid="stButton"] > button::after {
             display: block;
             text-align: center;
             width: 100%;
         }
 
         /* Button 1: ½ Fill -> 🌗 (Targeting the 3rd element container in the column) */
-        div[data-testid="column"] .element-container:nth-child(3) button p::before { content: "🌗"; }
+        div[data-testid="column"] .element-container:nth-child(3) [data-testid="stButton"] > button::after { 
+            content: "🌗"; 
+            font-size: 16px !important;
+        }
         
         /* Button 2: Full -> 🌕 (Targeting the 4th element container in the column) */
-        div[data-testid="column"] .element-container:nth-child(4) button p::before { content: "🌕"; }
+        div[data-testid="column"] .element-container:nth-child(4) [data-testid="stButton"] > button::after { 
+            content: "🌕"; 
+            font-size: 16px !important;
+        }
         
         /* Button 3: Empty -> 🌑 (Targeting the 5th element container in the column) */
-        div[data-testid="column"] .element-container:nth-child(5) button p::before { content: "🌑"; }
+        div[data-testid="column"] .element-container:nth-child(5) [data-testid="stButton"] > button::after { 
+            content: "🌑"; 
+            font-size: 16px !important;
+        }
 
         /* 5. Force shrink captions (Hz text) */
         div[data-testid="stCaptionContainer"] p {
