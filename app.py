@@ -101,49 +101,23 @@ st.markdown("""
     }
 
     /* ===================================== */
-    /* MOBILE — ZOOM OUT ENTIRE APP          */
+    /* MOBILE — HORIZONTAL SCROLLING BOWLS   */
     /* ===================================== */
 
     @media (max-width: 768px) {
-        html,
-        body {
-            width: 1680px !important;
-            min-width: 1680px !important;
-            max-width: 1680px !important;
-            overflow-x: hidden !important;
+        /* Target Streamlit's column container to prevent stacking */
+        div[data-testid="stHorizontalBlock"] {
+            flex-wrap: nowrap !important;
+            overflow-x: auto !important;
+            overflow-y: hidden !important;
+            -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+            padding-bottom: 15px; /* Room for the scrollbar */
         }
-
-        .stApp,
-        [data-testid="stAppViewContainer"],
-        [data-testid="stAppViewMain"] {
-            width: 1680px !important;
-            min-width: 1680px !important;
-            max-width: 1680px !important;
-        }
-
-        body {
-            zoom: 0.23 !important;
-        }
-    }
-
-    @media (max-width: 768px) and (orientation: landscape) {
-        html,
-        body {
-            width: 1680px !important;
-            min-width: 1680px !important;
-            max-width: 1680px !important;
-        }
-
-        .stApp,
-        [data-testid="stAppViewContainer"],
-        [data-testid="stAppViewMain"] {
-            width: 1680px !important;
-            min-width: 1680px !important;
-            max-width: 1680px !important;
-        }
-
-        body {
-            zoom: 0.50 !important;
+        
+        /* Force each column to maintain its width instead of squishing */
+        div[data-testid="column"] {
+            min-width: 120px !important;
+            flex: 0 0 120px !important;
         }
     }
 </style>
