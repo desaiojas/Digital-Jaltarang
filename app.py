@@ -124,7 +124,7 @@ st.markdown("""
         }
 
             /* TARGET ONLY THE LOWER ROWS: Pulls every row AFTER the bowls upward */
-            div.element-container:has([class*="st-key-bowl_grid"]) ~ div.element-container {
+            [class*="st-key-bowl_grid"] ~ div.element-container {
                 margin-top: -90px !important; 
             }
 
