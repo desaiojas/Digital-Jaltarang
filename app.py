@@ -310,7 +310,7 @@ st.markdown("""
     color: #2c1e16;
     font-size: 15px;
 ">
-    Reminder: Hold your phone/device horizontally for the best experience.
+    Reminder: Hold your phone/device HORIZONTALLY for the best experience.
 </div>
 """, unsafe_allow_html=True)
 
