@@ -354,5 +354,5 @@ for i in range(12):
         st.button("Empty", key=f"e_{i}", use_container_width=True, on_click=water_change, args=(i, 0))
 
 st.divider()
-st.markdown(f"### Frequency Visualizer: {st.session_state.last_hz} Hz")
+st.markdown(f"### Frequencies: {st.session_state.last_hz} Hz")
 st.line_chart(generate_wave(st.session_state.last_hz), height=200, use_container_width=True)
