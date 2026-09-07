@@ -122,12 +122,12 @@ if not st.session_state.started:
 # Sidebar Controls
 with st.sidebar:
     st.title("Controls")
-    if st.button("🏠 Return to Instructions"):
+    if st.button("Return to Instructions"):
         st.session_state.started = False
         st.rerun()
     
     st.divider()
-    if st.button("🔄 Reset All Bowls"):
+    if st.button("Reset All Bowls"):
         reset()
         st.rerun()
         
