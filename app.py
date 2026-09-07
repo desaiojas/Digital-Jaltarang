@@ -106,8 +106,8 @@ def play_song(song_notes):
 # ----------------- UI RENDERING -----------------
 
 if not st.session_state.started:
-    st.title("Digital Jaltarang")
-    st.write("Welcome to the Digital Jaltarang! This instrument consists of bowls filled with water to create musical notes.")
+    st.title("Digital Jaltarang Bowls")
+    st.write("This instrument consists of bowls filled with water to create musical notes.")
     st.write("**Instructions:**")
     st.write("1. Click the **Play** button below any bowl to hear its sound.")
     st.write("2. Use **½ Fill** to lower the pitch by a half-step.")
