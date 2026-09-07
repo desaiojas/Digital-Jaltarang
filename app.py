@@ -70,6 +70,9 @@ st.markdown("""
         min-width: 120px !important;
         max-width: 120px !important;
         flex: 0 0 120px !important;
+        box-sizing: border-box !important;
+        padding-left: 2px !important;
+        padding-right: 2px !important;
 
         white-space: nowrap !important;
         overflow: visible !important;
