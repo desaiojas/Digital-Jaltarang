@@ -201,13 +201,12 @@ if not st.session_state.started:
         st.rerun()
     st.stop()
 
-with st.sidebar:
-    st.title("Controls")
+control_col1, control_col2 = st.columns([1, 1])
+with control_col1:
     if st.button("Return to Instructions"):
         st.session_state.started = False
         st.rerun()
-
-    st.divider()
+with control_col2:
     if st.button("Reset All Bowls"):
         reset()
         st.rerun()
