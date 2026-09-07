@@ -60,15 +60,16 @@ FSH = "F#H Jaltarang.wav"
 GH = "GH Jaltarang.wav"
 
 ALL_PITCHES = [BL, C, CS, D, DS, E, F, FS, G, GS, A, AS, B, CH, CSH, DH, DSH, EH, FH, FSH, GH]
-# Set explicitly to a C Major Scale
-BASE_NOTES = [C, D, E, F, G, A, B, CH, DH, EH, FH, GH]
+
+# Expanded to 13 Bowls to include Low B up to High G in the C Major Scale
+BASE_NOTES = [BL, C, D, E, F, G, A, B, CH, DH, EH, FH, GH]
 
 if 'started' not in st.session_state:
     st.session_state.started = False
 if 'notes' not in st.session_state:
     st.session_state.notes = BASE_NOTES.copy()
 if 'water_states' not in st.session_state:
-    st.session_state.water_states = [0]*12
+    st.session_state.water_states = [0]*13
 if 'last_hz' not in st.session_state:
     st.session_state.last_hz = 262
 
@@ -83,7 +84,8 @@ def play_audio(file_path):
         pass 
 
 def find_hz(note):
-    hz_map = {BL: 262, C: 262, CS: 277, D: 294, DS: 311, E: 330, F: 349, FS: 370, G: 392, GS: 415, A: 440, AS: 466, B: 494, CH: 523, CSH: 554, DH: 587, DSH: 622, EH: 659, FH: 698, FSH: 740, GH: 784}
+    # Adjusted BL to 247 Hz to accurately reflect Low B
+    hz_map = {BL: 247, C: 262, CS: 277, D: 294, DS: 311, E: 330, F: 349, FS: 370, G: 392, GS: 415, A: 440, AS: 466, B: 494, CH: 523, CSH: 554, DH: 587, DSH: 622, EH: 659, FH: 698, FSH: 740, GH: 784}
     return hz_map.get(note, 262)
 
 def generate_wave(hz):
@@ -91,6 +93,8 @@ def generate_wave(hz):
 
 def get_note_label(note_filename):
     clean_name = note_filename.replace(" Jaltarang.wav", "")
+    if note_filename == BL:
+        return "B (Low)"
     if "H" in clean_name:
         return clean_name.replace("H", "") + " (High)"
     return clean_name
@@ -109,14 +113,14 @@ def water_change(ind, fill_level):
 
 def reset():
     st.session_state.notes = BASE_NOTES.copy()
-    st.session_state.water_states = [0]*12
+    st.session_state.water_states = [0]*13
 
 if not st.session_state.started:
-    st.title("Digital Jaltarang")
-    st.write("Welcome to the Digital Jaltarang! This instrument consists of bowls filled with water to create musical notes.")
+    st.title("Digital Jaltarang Bowls")
+    st.write("This instrument consists of bowls filled with water to create musical notes.")
     st.write("**Instructions:**")
     st.write("1. Click the **Play** button below any bowl to hear its sound.")
-    st.write("2. Use **½ Fill** to lower the pitch by a half-step to easily tune the major scale into a minor scale.")
+    st.write("2. Use **½ Fill** to lower the pitch by a half-step (easily tune the major scale into a minor scale).")
     st.write("3. Use **Full** to lower the pitch by a full step.")
     st.write("4. Use **Empty** to return the bowl to its base note.")
     st.write("5. Watch the physical sound waves react in real-time as you play!")
@@ -136,16 +140,17 @@ with st.sidebar:
         reset()
         st.rerun()
 
-st.markdown("### The Instrument (C Major Scale)")
+st.markdown("### The Bowls (C Major Scale)")
 st.session_state.audio_player = st.empty() 
 
-cols = st.columns(12)
-y_offsets = [0, 40, 70, 90, 100, 105, 105, 100, 90, 70, 40, 0]
+# Adjusted column count and offsets for 13 bowls
+cols = st.columns(13)
+y_offsets = [0, 30, 60, 80, 95, 105, 110, 105, 95, 80, 60, 30, 0]
 
 # 0: Ceramic White/Gray, 1: Vibrant Aqua, 2: Deep Sapphire
 colors = {0: "#F8F9FA", 1: "#00B4D8", 2: "#03045E"} 
 
-for i in range(12):
+for i in range(13):
     with cols[i]:
         note = st.session_state.notes[i]
         level = st.session_state.water_states[i]
