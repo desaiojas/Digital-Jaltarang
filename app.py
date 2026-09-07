@@ -107,7 +107,7 @@ st.markdown("""
         /* 1. Force columns to stay in one row */
         div[data-testid="stHorizontalBlock"] {
             flex-wrap: nowrap !important;
-            gap: 2px !important;
+            gap: 1px !important;
         }
         
         /* 2. Unlock the hardcoded 120px widths so they can squish */
@@ -130,16 +130,19 @@ st.markdown("""
             min-width: 0px !important;
             max-width: none !important;
             flex: 1 1 auto !important;
-            padding: 4px 0px !important;
+            padding: 2px 0px !important;
+            min-height: 0px !important;
         }
         
-        /* 4. Shrink button fonts */
-        div[data-testid="column"] [data-testid="stButton"] > button p {
-            font-size: 9px !important;
+        /* 4. Force shrink button fonts heavily */
+        div[data-testid="column"] [data-testid="stButton"] > button * {
+            font-size: 8px !important;
             line-height: 1.0 !important;
+            margin: 0 !important;
+            padding: 0 !important;
         }
 
-        /* 5. Shrink captions (Hz text) */
+        /* 5. Force shrink captions (Hz text) */
         div[data-testid="stCaptionContainer"] * {
             font-size: 9px !important;
             line-height: 1.1 !important;
@@ -317,6 +320,7 @@ for i in range(12):
                     overflow: visible;
                 }}
 
+                /* Default Desktop Size */
                 .bowl {{
                     position: absolute;
                     top: {y_offsets[i]}px;
@@ -344,13 +348,16 @@ for i in range(12):
                     transform: translateX(-50%) scale(0.97);
                 }}
                 
-                /* When Streamlit squishes the column iframe to less than 150px, shrink the bowl graphic */
-                @media (max-width: 150px) {{
+                /* 
+                  Mobile Size: Only triggers when the column iframe is squeezed tighter than 80px.
+                  Because desktop columns are strictly 120px, desktop is completely unaffected.
+                */
+                @media (max-width: 80px) {{
                     .bowl {{
-                        width: 24px !important;
-                        height: 24px !important;
+                        width: 28px !important;
+                        height: 28px !important;
                         top: calc({y_offsets[i]}px * 0.4) !important;
-                        border-width: 1px !important;
+                        border-width: 2px !important;
                         box-shadow: 
                             inset -3px -3px 8px rgba(0,0,0,0.6),
                             2px 2px 5px rgba(0,0,0,0.3) !important;
