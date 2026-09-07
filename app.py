@@ -109,16 +109,13 @@ st.markdown("""
     /* ===================================== */
 
     @media (max-width: 768px) {
-        /* 1. Force columns to stay in one row & pull them up heavily */
+        /* 1. Force columns to stay in one row */
         div[data-testid="stHorizontalBlock"] {
             flex-wrap: nowrap !important;
             gap: 1px !important;
-            margin-top: -65px !important; /* Yank the entire bowl section up to close the gap */
-            position: relative;
-            z-index: 10;
         }
 
-        /* Destroy the spacing gap on mobile */
+        /* Hide the gap below the reminder on mobile */
         .title-spacer {
             display: none !important;
         }
@@ -143,40 +140,15 @@ st.markdown("""
             min-width: 0px !important;
             max-width: none !important;
             flex: 1 1 auto !important;
-            padding: 2px 0px !important;
-            min-height: 32px !important; /* Ensure height for the emoji */
+            padding: 4px 0px !important;
+            min-height: 32px !important;
         }
         
-        /* 4. TRUE EMOJI REPLACEMENT */
-        
-        /* Forcefully delete Streamlit's inner text container from the DOM visually */
-        div[data-testid="column"] [data-testid="stButton"] > button > div {
-            display: none !important; 
-        }
-        
-        /* Inject the emojis directly into the empty button shell */
-        div[data-testid="column"] [data-testid="stButton"] > button::after {
-            display: block;
-            text-align: center;
-            width: 100%;
-        }
-
-        /* Button 1: ½ Fill -> 🌗 (Targeting the 3rd element container in the column) */
-        div[data-testid="column"] .element-container:nth-child(3) [data-testid="stButton"] > button::after { 
-            content: "🌗"; 
-            font-size: 16px !important;
-        }
-        
-        /* Button 2: Full -> 🌕 (Targeting the 4th element container in the column) */
-        div[data-testid="column"] .element-container:nth-child(4) [data-testid="stButton"] > button::after { 
-            content: "🌕"; 
-            font-size: 16px !important;
-        }
-        
-        /* Button 3: Empty -> 🌑 (Targeting the 5th element container in the column) */
-        div[data-testid="column"] .element-container:nth-child(5) [data-testid="stButton"] > button::after { 
-            content: "🌑"; 
-            font-size: 16px !important;
+        /* 4. Increase font size on mobile buttons to show the JS-injected Emojis clearly */
+        div[data-testid="column"] [data-testid="stButton"] > button p {
+            font-size: 16px !important; 
+            margin: 0 !important;
+            padding: 0 !important;
         }
 
         /* 5. Force shrink captions (Hz text) */
@@ -441,3 +413,54 @@ for i in range(12):
 st.divider()
 st.markdown(f"### Frequencies: {st.session_state.last_hz} Hz")
 st.line_chart(generate_wave(st.session_state.last_hz), height=200, use_container_width=True)
+
+# =========================================================================
+# JAVASCRIPT ROOT CAUSE FIX: DOM TEXT REPLACEMENT & MOBILE YANKING
+# =========================================================================
+components.html(
+    """
+    <script>
+        function applyMobileFixes() {
+            const parent = window.parent.document;
+            const isMobile = window.parent.innerWidth <= 768;
+            
+            // 1. Physically swap the text content to Emojis (bypasses CSS restrictions)
+            const buttons = parent.querySelectorAll('div[data-testid="column"] div[data-testid="stButton"] p');
+            buttons.forEach(p => {
+                // Save original text once
+                if (!p.hasAttribute('data-orig')) {
+                    p.setAttribute('data-orig', p.innerText.trim());
+                }
+                
+                const orig = p.getAttribute('data-orig');
+                
+                // Swap text based on screen size
+                if (orig === "½ Fill") p.innerText = isMobile ? "🌗" : "½ Fill";
+                if (orig === "Full") p.innerText = isMobile ? "🌕" : "Full";
+                if (orig === "Empty") p.innerText = isMobile ? "🌑" : "Empty";
+            });
+
+            // 2. Locate the massive 12-column bowl block and yank it upward by -100px
+            const blocks = parent.querySelectorAll('div[data-testid="stHorizontalBlock"]');
+            blocks.forEach(block => {
+                const columns = block.querySelectorAll(':scope > div[data-testid="column"]');
+                if (columns.length > 5) { // Confirms this is the 12-bowl layout
+                    if (isMobile) {
+                        block.style.setProperty('margin-top', '-100px', 'important');
+                        block.style.setProperty('position', 'relative', 'important');
+                        block.style.setProperty('z-index', '10', 'important');
+                    } else {
+                        block.style.setProperty('margin-top', '0px', 'important');
+                    }
+                }
+            });
+        }
+        
+        // Execute immediately, on resize, and periodically to catch Streamlit state re-renders
+        applyMobileFixes();
+        window.parent.addEventListener('resize', applyMobileFixes);
+        setInterval(applyMobileFixes, 500); 
+    </script>
+    """,
+    height=0, width=0
+)
