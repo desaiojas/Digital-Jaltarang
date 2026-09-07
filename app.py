@@ -1,13 +1,3 @@
-# File conversion
-# Get all M4A files in current directory
-# m4a_files = [f for f in os.listdir('.') if f.endswith('.m4a')]
-# Convert each file
-# for m4a_file in m4a_files:
-#     audio = AudioSegment.from_file(m4a_file, format="m4a")
-#     wav_file = m4a_file.replace('.m4a', '.wav')
-#     audio.export(wav_file, format="wav")
-#     print(f"Converted {m4a_file} to {wav_file}")
-
 import os
 import math
 import time
@@ -28,20 +18,17 @@ st.markdown("""
         background-color: #b5956c;
     }
     
-    /* Ensure all main text stays dark brown for readability against the wood */
-    h1, h2, h3, p, div.stMarkdown {
+    /* Ensure all main text and lists stay dark brown for readability against the wood */
+    h1, h2, h3, p, div.stMarkdown, li {
         color: #2c1e16 !important;
     }
     
     /* Force buttons to be light with dark text in both Light and Dark themes */
-    /* Reduced padding and font size to prevent text from leaking/truncating */
+    /* All dimension/padding overrides have been removed to restore normal sizing */
     .stButton > button {
         background-color: #f8f9fa !important;
         color: #2c1e16 !important;
         border: 1px solid #b5956c !important;
-        padding: 2px 0px !important; 
-        font-size: 12px !important;
-        min-height: 28px !important;
     }
     
     .stButton > button:hover {
@@ -49,13 +36,18 @@ st.markdown("""
         border-color: #2c1e16 !important;
         color: #000000 !important;
     }
-    
-    /* Tighten vertical spacing between elements to prevent vertical leaking */
-    .element-container {
-        margin-bottom: -5px !important;
-    }
 </style>
 """, unsafe_allow_html=True)
+
+# File conversion
+# Get all M4A files in current directory
+# m4a_files = [f for f in os.listdir('.') if f.endswith('.m4a')]
+# Convert each file
+# for m4a_file in m4a_files:
+#     audio = AudioSegment.from_file(m4a_file, format="m4a")
+#     wav_file = m4a_file.replace('.m4a', '.wav')
+#     audio.export(wav_file, format="wav")
+#     print(f"Converted {m4a_file} to {wav_file}")
 
 # Sounds
 C = "C Jaltarang.wav"
@@ -192,7 +184,7 @@ for i in range(12):
         </div>
         """
         st.markdown(bowl_html, unsafe_allow_html=True)
-        st.caption(f"<div style='text-align: center; color: #2c1e16; line-height: 1.2;'><b>{note_label}</b><br>{hz} Hz</div>", unsafe_allow_html=True)
+        st.caption(f"<div style='text-align: center; color: #2c1e16;'><b>{note_label}</b><br>{hz} Hz</div>", unsafe_allow_html=True)
         
         if st.button("▶", key=f"p_{i}", use_container_width=True):
             st.session_state.last_hz = hz
