@@ -12,65 +12,69 @@ st.markdown("""
     .stApp {
         background: linear-gradient(135deg, #e6d7c3 0%, #c5a880 100%);
     }
-    
+
     /* Darker matching sidebar */
     [data-testid="stSidebar"] {
         background-color: #b5956c;
     }
-    
+
     /* Main text */
     h1, h2, h3, p, div.stMarkdown, li {
         color: #2c1e16 !important;
     }
-    
+
     /* Normal buttons */
     .stButton > button {
         background-color: #f8f9fa !important;
         color: #2c1e16 !important;
         border: 1px solid #b5956c !important;
     }
-    
+
     .stButton > button:hover {
         background-color: #ffffff !important;
         border-color: #2c1e16 !important;
     }
 
-    /* ============================= */
-    /* SIDEBAR — WIDE                */
-    /* ============================= */
+    /* Sidebar buttons — wide */
     [data-testid="stSidebar"] .stButton > button {
         min-width: 200px !important;
     }
 
-    /* ============================= */
-    /* START PLAYING — WIDE          */
-    /* ============================= */
+    /* Start Playing — wide */
     .stButton > button[kind="primary"] {
         min-width: 170px !important;
     }
 
-    /* ============================= */
-    /* BOWL BUTTONS — WIDER ONLY     */
-    /* ============================= */
+    /* ================================= */
+    /* BOWL BUTTONS ONLY                 */
+    /* ================================= */
+
     [data-testid="column"] .stButton > button {
-        min-width: 115px !important;
         width: 115px !important;
-        white-space: nowrap !important;
-        overflow: visible !important;
-        text-overflow: clip !important;
+        min-width: 115px !important;
+        max-width: 115px !important;
     }
 
-    /* Prevent Streamlit's inner text container from clipping */
+    /* Stop Streamlit from shortening "Empty" to "Em..." */
     [data-testid="column"] .stButton > button > div {
         width: 100% !important;
+        max-width: none !important;
         overflow: visible !important;
-        white-space: nowrap !important;
+    }
+
+    [data-testid="column"] .stButton > button > div > div {
+        width: max-content !important;
+        max-width: none !important;
+        overflow: visible !important;
     }
 
     [data-testid="column"] .stButton > button p {
+        width: max-content !important;
+        max-width: none !important;
         overflow: visible !important;
         white-space: nowrap !important;
         text-overflow: clip !important;
+        color: #2c1e16 !important;
     }
 </style>
 """, unsafe_allow_html=True)
