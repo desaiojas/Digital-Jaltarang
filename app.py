@@ -279,7 +279,7 @@ st.session_state.audio_player = st.empty()
 
 # 12 bowls layout
 cols = st.columns(12, gap="small")
-y_offsets = [80, 76, 68, 52, 30, 0, 0, 30, 52, 68, 76, 80]
+y_offsets = [150, 125, 95, 60, 30, 0, 0, 30, 60, 95, 125, 150]
 
 # 0: Ceramic White/Gray, 1: Vibrant Aqua, 2: Deep Sapphire
 colors = {0: "#F8F9FA", 1: "#00B4D8", 2: "#03045E"} 
