@@ -23,12 +23,14 @@ st.markdown("""
         color: #2c1e16 !important;
     }
     
-    /* Force buttons to be light with dark text in both Light and Dark themes */
-    /* All dimension/padding overrides have been removed to restore normal sizing */
+    /* Force buttons to be light with dark text, and reduce side padding to prevent truncation */
     .stButton > button {
         background-color: #f8f9fa !important;
         color: #2c1e16 !important;
         border: 1px solid #b5956c !important;
+        padding-left: 2px !important;
+        padding-right: 2px !important;
+        font-size: 14px !important;
     }
     
     .stButton > button:hover {
