@@ -213,6 +213,19 @@ with control_col2:
         reset()
         st.rerun()
 
+st.markdown("""
+<div style="
+    text-align: center;
+    margin-top: 8px;
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: #2c1e16;
+    font-size: 15px;
+">
+    📱 Reminder: Hold your phone/device horizontally for the best experience.
+</div>
+""", unsafe_allow_html=True)
+
 st.markdown("<div style='margin-top: 25px;'></div>", unsafe_allow_html=True)
 st.session_state.audio_player = st.empty() 
 
@@ -230,28 +243,26 @@ for i in range(12):
         hz = find_hz(note)
         note_label = get_note_label(note)
 
-        bowl_html = f"""
-        <div style='
-            margin-top: {y_offsets[i]}px; 
-            margin-bottom: 20px;
-            width: 100%; 
-            aspect-ratio: 1; 
-            border-radius: 50%; 
-            background: radial-gradient(circle at 30% 30%, #ffffff 10%, {colors[level]} 80%, #1a1a1a 100%); 
-            border: 3px solid #8D99AE; 
-            box-shadow: inset -8px -8px 20px rgba(0,0,0,0.6), 5px 5px 15px rgba(0,0,0,0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        '>
-        </div>
-        """
-        st.markdown(bowl_html, unsafe_allow_html=True)
-        st.caption(f"<div style='text-align: center; color: #2c1e16;'><b>{note_label}</b><br>{hz} Hz</div>", unsafe_allow_html=True)
-
-        if st.button("▶", key=f"p_{i}", use_container_width=True):
+        if st.button(" ", key=f"p_{i}", use_container_width=True):
             st.session_state.last_hz = hz
             play_audio(note)
+
+        st.markdown(f"""
+        <style>
+        div[data-testid="stButton"] button[kind="secondary"][aria-label=" "] {{
+            margin-top: {y_offsets[i]}px;
+            margin-bottom: 20px;
+            width: 100% !important;
+            aspect-ratio: 1 !important;
+            border-radius: 50% !important;
+            background: radial-gradient(circle at 30% 30%, #ffffff 10%, {colors[level]} 80%, #1a1a1a 100%) !important;
+            border: 3px solid #8D99AE !important;
+            box-shadow: inset -8px -8px 20px rgba(0,0,0,0.6), 5px 5px 15px rgba(0,0,0,0.3) !important;
+        }}
+        </style>
+        """, unsafe_allow_html=True)
+
+        st.caption(f"<div style='text-align: center; color: #2c1e16;'><b>{note_label}</b><br>{hz} Hz</div>", unsafe_allow_html=True)
 
         st.button("½ Fill", key=f"h_{i}", use_container_width=True, on_click=water_change, args=(i, 1))
         st.button("Full", key=f"f_{i}", use_container_width=True, on_click=water_change, args=(i, 2))
