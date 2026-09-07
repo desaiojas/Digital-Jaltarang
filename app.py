@@ -137,9 +137,9 @@ st.markdown("""
         [class*="st-key-bowl_grid"] [data-testid="column"] > div.element-container:nth-child(1),
         [class*="st-key-bowl_grid"] [data-testid="column"] > div.element-container:nth-child(1) > div,
         [class*="st-key-bowl_grid"] [data-testid="column"] > div.element-container:nth-child(1) iframe {
-            height: 30px !important;
-            min-height: 30px !important;
-            max-height: 30px !important;
+            height: 1px !important;
+            min-height: 1px !important;
+            max-height: 1px !important;
         }
 
         /* Small cosmetic tightening between the iframe and the note/Hz caption */
