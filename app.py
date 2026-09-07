@@ -18,68 +18,31 @@ st.markdown("""
         background-color: #b5956c;
     }
     
-    /* Main text */
+    /* Ensure all main text and lists stay dark brown for readability */
     h1, h2, h3, p, div.stMarkdown, li {
         color: #2c1e16 !important;
     }
     
-    /* ============================= */
-    /* GENERAL BUTTONS               */
-    /* ============================= */
+    /* Default buttons — KEEP ORIGINAL BOWL BUTTON SIZING */
     .stButton > button {
         background-color: #f8f9fa !important;
         color: #2c1e16 !important;
         border: 1px solid #b5956c !important;
-        font-size: 14px !important;
     }
-
+    
     .stButton > button:hover {
         background-color: #ffffff !important;
         border-color: #2c1e16 !important;
     }
 
-    /* ============================= */
-    /* SIDEBAR BUTTONS               */
-    /* Keep these wide */
-    /* ============================= */
+    /* ONLY widen the sidebar buttons */
     [data-testid="stSidebar"] .stButton > button {
-        width: auto !important;
         min-width: 200px !important;
-        padding-left: 10px !important;
-        padding-right: 10px !important;
     }
 
-    /* ============================= */
-    /* INSTRUCTION PAGE BUTTON       */
-    /* Keep Start Playing wide */
-    /* ============================= */
+    /* ONLY widen the Start Playing button */
     .stButton > button[kind="primary"] {
         min-width: 170px !important;
-        padding-left: 10px !important;
-        padding-right: 10px !important;
-    }
-
-    /* ============================= */
-    /* BOWL BUTTONS                  */
-    /* Keep current narrow sizing */
-    /* ============================= */
-    [data-testid="column"] .stButton > button {
-        width: 100% !important;
-        min-width: 0 !important;
-        padding-left: 2px !important;
-        padding-right: 2px !important;
-        white-space: nowrap !important;
-        overflow: visible !important;
-        text-overflow: clip !important;
-        font-size: 14px !important;
-    }
-
-    [data-testid="column"] .stButton > button p {
-        color: #2c1e16 !important;
-        white-space: nowrap !important;
-        overflow: visible !important;
-        text-overflow: clip !important;
-        font-size: 14px !important;
     }
 </style>
 """, unsafe_allow_html=True)
