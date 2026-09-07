@@ -126,7 +126,7 @@ st.markdown("""
             /* TARGET ONLY THE LOWER ROWS: Pulls every row AFTER the bowls upward */
             div[data-testid="stHorizontalBlock"] + div[data-testid="stHorizontalBlock"],
             div[data-testid="stHorizontalBlock"] ~ div[data-testid="stHorizontalBlock"] {
-                margin-top: -90px !important; 
+                margin-top: -150px !important; 
             }
 
 
