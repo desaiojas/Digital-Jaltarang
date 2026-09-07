@@ -105,16 +105,45 @@ st.markdown("""
     /* ===================================== */
 
     @media (max-width: 768px) {
-        html {
-            zoom: 0.65 !important;
+        html,
+        body {
+            width: 1680px !important;
+            min-width: 1680px !important;
+            max-width: 1680px !important;
+            overflow-x: hidden !important;
+        }
+
+        .stApp,
+        [data-testid="stAppViewContainer"],
+        [data-testid="stAppViewMain"] {
+            width: 1680px !important;
+            min-width: 1680px !important;
+            max-width: 1680px !important;
         }
 
         body {
-            width: 153.85% !important;
+            zoom: 0.23 !important;
+        }
+    }
+
+    @media (max-width: 768px) and (orientation: landscape) {
+        html,
+        body {
+            width: 1680px !important;
+            min-width: 1680px !important;
+            max-width: 1680px !important;
         }
 
-        .stApp {
-            width: 100% !important;
+        .stApp,
+        [data-testid="stAppViewContainer"],
+        [data-testid="stAppViewMain"] {
+            width: 1680px !important;
+            min-width: 1680px !important;
+            max-width: 1680px !important;
+        }
+
+        body {
+            zoom: 0.50 !important;
         }
     }
 </style>
@@ -250,7 +279,7 @@ st.session_state.audio_player = st.empty()
 
 # 12 bowls layout
 cols = st.columns(12, gap="small")
-y_offsets = [0, 40, 70, 90, 100, 105, 105, 100, 90, 70, 40, 0]
+y_offsets = [80, 76, 68, 52, 30, 0, 0, 30, 52, 68, 76, 80]
 
 # 0: Ceramic White/Gray, 1: Vibrant Aqua, 2: Deep Sapphire
 colors = {0: "#F8F9FA", 1: "#00B4D8", 2: "#03045E"} 
@@ -277,7 +306,7 @@ for i in range(12):
                     margin: 0;
                     padding: 0;
                     width: 100%;
-                    height: 210px;
+                    height: 190px;
                     background: transparent !important;
                     overflow: hidden;
                 }}
@@ -285,7 +314,7 @@ for i in range(12):
                 .bowl-stage {{
                     position: relative;
                     width: 100%;
-                    height: 210px;
+                    height: 190px;
                     overflow: visible;
                 }}
 
@@ -294,8 +323,8 @@ for i in range(12):
                     top: {y_offsets[i]}px;
                     left: 50%;
                     transform: translateX(-50%);
-                    width: 95px;
-                    height: 95px;
+                    width: 88px;
+                    height: 88px;
                     border-radius: 50%;
                     background: radial-gradient(
                         circle at 30% 30%,
@@ -343,7 +372,7 @@ for i in range(12):
         components.html(
             bowl_html,
             width="stretch",
-            height=210,
+            height=190,
             scrolling=False
         )
 
@@ -354,5 +383,5 @@ for i in range(12):
         st.button("Empty", key=f"e_{i}", use_container_width=True, on_click=water_change, args=(i, 0))
 
 st.divider()
-st.markdown(f"### Frequencies: {st.session_state.last_hz} Hz")
+st.markdown(f"### Frequency Visualizer: {st.session_state.last_hz} Hz")
 st.line_chart(generate_wave(st.session_state.last_hz), height=200, use_container_width=True)
