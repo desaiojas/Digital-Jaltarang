@@ -23,11 +23,22 @@ st.markdown("""
         color: #2c1e16 !important;
     }
     
-    /* Dark Mode adaptation for buttons (colors only, preserving native sizing) */
+    /* Buttons */
     .stButton > button {
         background-color: #f8f9fa !important;
         color: #2c1e16 !important;
         border: 1px solid #b5956c !important;
+        white-space: nowrap !important;
+        overflow: visible !important;
+        font-size: 11px !important;
+        padding-left: 2px !important;
+        padding-right: 2px !important;
+    }
+
+    .stButton > button p {
+        white-space: nowrap !important;
+        overflow: visible !important;
+        font-size: 11px !important;
     }
     
     .stButton > button:hover {
