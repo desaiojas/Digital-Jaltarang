@@ -251,58 +251,81 @@ for i in range(12):
             audio_b64 = ""
 
         bowl_html = f"""
-        <style>
-            html, body {{
-                margin: 0;
-                padding: 0;
-                background: transparent;
-                overflow: hidden;
-            }}
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <style>
+                html, body {{
+                    margin: 0;
+                    padding: 0;
+                    width: 100%;
+                    height: 225px;
+                    background: transparent !important;
+                    overflow: hidden;
+                }}
 
-            .bowl-container {{
-                width: 120px;
-                height: {y_offsets[i] + 140}px;
-                margin: 0;
-                padding: 0;
-            }}
+                .bowl-stage {{
+                    position: relative;
+                    width: 100%;
+                    height: 225px;
+                    overflow: visible;
+                }}
 
-            .bowl {{
-                margin-top: {y_offsets[i]}px;
-                margin-bottom: 20px;
-                width: 120px;
-                height: 120px;
-                border-radius: 50%;
-                background: radial-gradient(circle at 30% 30%, #ffffff 10%, {colors[level]} 80%, #1a1a1a 100%);
-                border: 3px solid #8D99AE;
-                box-shadow: inset -8px -8px 20px rgba(0,0,0,0.6), 5px 5px 15px rgba(0,0,0,0.3);
-                cursor: pointer;
-                box-sizing: border-box;
-                transition: transform 0.08s ease;
-            }}
+                .bowl {{
+                    position: absolute;
+                    top: {y_offsets[i]}px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    width: 120px;
+                    height: 120px;
+                    border-radius: 50%;
+                    background: radial-gradient(
+                        circle at 30% 30%,
+                        #ffffff 10%,
+                        {colors[level]} 80%,
+                        #1a1a1a 100%
+                    );
+                    border: 3px solid #8D99AE;
+                    box-shadow:
+                        inset -8px -8px 20px rgba(0,0,0,0.6),
+                        5px 5px 15px rgba(0,0,0,0.3);
+                    cursor: pointer;
+                    box-sizing: border-box;
+                    transition: transform 0.08s ease;
+                }}
 
-            .bowl:active {{
-                transform: scale(0.97);
-            }}
-        </style>
+                .bowl:active {{
+                    transform: translateX(-50%) scale(0.97);
+                }}
+            </style>
+        </head>
 
-        <div class="bowl-container">
-            <div class="bowl" id="bowl"></div>
-        </div>
+        <body>
+            <div class="bowl-stage">
+                <div class="bowl" id="bowl"></div>
+            </div>
 
-        <script>
-            const bowl = document.getElementById("bowl");
-            const audio = new Audio("data:audio/wav;base64,{audio_b64}");
+            <script>
+                const bowl = document.getElementById("bowl");
+                const audio = new Audio(
+                    "data:audio/wav;base64,{audio_b64}"
+                );
 
-            bowl.addEventListener("click", function() {{
-                audio.currentTime = 0;
-                audio.play();
-            }});
-        </script>
+                bowl.addEventListener("click", function() {{
+                    audio.currentTime = 0;
+                    audio.play().catch(function(error) {{
+                        console.log("Audio playback failed:", error);
+                    }});
+                }});
+            </script>
+        </body>
+        </html>
         """
 
         components.html(
             bowl_html,
-            height=y_offsets[i] + 145,
+            width=120,
+            height=225,
             scrolling=False
         )
 
