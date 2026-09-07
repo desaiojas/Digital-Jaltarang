@@ -1,12 +1,4 @@
-"""
-Goals for next time:
-- replace C# bowl
-- decide how to demonstrate the application (3-4 points; make it simple and clear)
-(Jan 3rd)
 
-- present project with points/features to: Sugnan:jaltarang-teacher (Jaltarang class zoom beginning), William:musical-peer (Lunch time), Madhav:judge-science-fair (Guests over), Prakash:experienced-science-fair (Guests over), Nachiket-musical-teacher (Sangeeta class in-person beginning; coordinate at end of previous class)
-(when oppurtunity comes)
-"""
 
 import random
 import os
@@ -22,24 +14,23 @@ BLUE = "#0000FF"
 
 ### Sound Loading ### DOWN
 
-"""
+
 # File conversion
 
 # Get all M4A files in current directory
-m4a_files = [f for f in os.listdir('.') if f.endswith('.m4a')]
+#m4a_files = [f for f in os.listdir('.') if f.endswith('.m4a')]
 
 # Convert each file
-for m4a_file in m4a_files:
+#for m4a_file in m4a_files:
     # Load the M4A file
-    audio = AudioSegment.from_file(m4a_file, format="m4a")
+#    audio = AudioSegment.from_file(m4a_file, format="m4a")
 
     # Create WAV filename
-    wav_file = m4a_file.replace('.m4a', '.wav')
+#    wav_file = m4a_file.replace('.m4a', '.wav')
 
     # Export as WAV
-    audio.export(wav_file, format="wav")
-    print(f"Converted {m4a_file} to {wav_file}")
-"""
+#    audio.export(wav_file, format="wav")
+#    print(f"Converted {m4a_file} to {wav_file}")
 
 # Sounds
 BL = "C Jaltarang.wav"
