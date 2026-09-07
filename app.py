@@ -109,18 +109,30 @@ st.markdown("""
     /* ===================================== */
 
     @media (max-width: 768px) {
+        /* Reduce universal top padding to pull title up */
+        .block-container {
+            padding-top: 2rem !important;
+        }
+        
         /* 1. Force columns to stay in one row */
         div[data-testid="stHorizontalBlock"] {
             flex-wrap: nowrap !important;
             gap: 1px !important;
+            margin-top: -5px !important;
         }
 
-        /* Hide the gap below the reminder on mobile */
+        /* 2. CHOP THE IFRAME HEIGHT: This is the magic fix that deletes the huge gap */
+        div[data-testid="column"] iframe {
+            height: 85px !important;
+            margin-bottom: -5px !important;
+        }
+
+        /* Hide the desktop spacer completely */
         .title-spacer {
             display: none !important;
         }
         
-        /* 2. Unlock the hardcoded widths so they can squish */
+        /* 3. Unlock the hardcoded widths so they can squish */
         div[data-testid="column"] {
             min-width: 0px !important;
             max-width: none !important;
@@ -134,7 +146,7 @@ st.markdown("""
             max-width: none !important;
         }
 
-        /* 3. Shrink the buttons dramatically to fit */
+        /* 4. Shrink the buttons dramatically to fit */
         div[data-testid="column"] [data-testid="stButton"] > button {
             width: 100% !important;
             min-width: 0px !important;
@@ -144,12 +156,38 @@ st.markdown("""
             min-height: 32px !important;
         }
         
-        /* 4. Increase font size on mobile buttons to show the JS-injected Emojis clearly */
+        /* ======================================= */
+        /* BULLETPROOF CSS EMOJI SWAP FOR MOBILE   */
+        /* ======================================= */
+        
+        /* Visually crush and hide the original text */
         div[data-testid="column"] [data-testid="stButton"] > button p {
-            font-size: 16px !important; 
+            font-size: 0px !important; 
+            visibility: hidden !important;
             margin: 0 !important;
             padding: 0 !important;
+            height: 0px !important;
         }
+
+        /* Reveal the emoji pseudo-element */
+        div[data-testid="column"] [data-testid="stButton"] > button p::after {
+            visibility: visible !important;
+            font-size: 18px !important; 
+            display: block !important;
+            text-align: center !important;
+            width: 100% !important;
+            line-height: 1.2 !important;
+        }
+
+        /* Count backward from the bottom of the column to perfectly target the 3 buttons */
+        /* 3rd from the bottom = ½ Fill */
+        div[data-testid="column"] .element-container:nth-last-child(3) button p::after { content: "🌗" !important; }
+        
+        /* 2nd from the bottom = Full */
+        div[data-testid="column"] .element-container:nth-last-child(2) button p::after { content: "🌕" !important; }
+        
+        /* Last item in column = Empty */
+        div[data-testid="column"] .element-container:nth-last-child(1) button p::after { content: "🌑" !important; }
 
         /* 5. Force shrink captions (Hz text) */
         div[data-testid="stCaptionContainer"] p {
@@ -160,16 +198,6 @@ st.markdown("""
     }
 </style>
 """, unsafe_allow_html=True)
-
-# File conversion
-# Get all M4A files in current directory
-# m4a_files = [f for f in os.listdir('.') if f.endswith('.m4a')]
-# Convert each file
-# for m4a_file in m4a_files:
-#     audio = AudioSegment.from_file(m4a_file, format="m4a")
-#     wav_file = m4a_file.replace('.m4a', '.wav')
-#     audio.export(wav_file, format="wav")
-#     print(f"Converted {m4a_file} to {wav_file}")
 
 # Sounds
 C = "C Jaltarang.wav"
@@ -360,11 +388,14 @@ for i in range(12):
                 
                 /* Mobile Size overrides */
                 @media (max-width: 80px) {{
+                    html, body, .bowl-stage {{
+                        height: 85px !important; /* Force HTML elements to match the chopped iframe height */
+                    }}
                     .bowl {{
-                        width: 36px !important;
-                        height: 36px !important;
-                        /* Restores the curve (0.4 multiplier) but pushes the entire curve 100px downwards */
-                        top: calc(100px + ({y_offsets[i]}px * 0.4)) !important; 
+                        width: 32px !important;
+                        height: 32px !important;
+                        /* Recreates the curve properly scaled for the smaller 85px space */
+                        top: calc(15px + ({y_offsets[i]}px * 0.3)) !important; 
                         bottom: auto !important; 
                         border-width: 2px !important;
                         box-shadow: 
@@ -413,54 +444,3 @@ for i in range(12):
 st.divider()
 st.markdown(f"### Frequencies: {st.session_state.last_hz} Hz")
 st.line_chart(generate_wave(st.session_state.last_hz), height=200, use_container_width=True)
-
-# =========================================================================
-# JAVASCRIPT ROOT CAUSE FIX: DOM TEXT REPLACEMENT & MOBILE YANKING
-# =========================================================================
-components.html(
-    """
-    <script>
-        function applyMobileFixes() {
-            const parent = window.parent.document;
-            const isMobile = window.parent.innerWidth <= 768;
-            
-            // 1. Physically swap the text content to Emojis (bypasses CSS restrictions)
-            const buttons = parent.querySelectorAll('div[data-testid="column"] div[data-testid="stButton"] p');
-            buttons.forEach(p => {
-                // Save original text once
-                if (!p.hasAttribute('data-orig')) {
-                    p.setAttribute('data-orig', p.innerText.trim());
-                }
-                
-                const orig = p.getAttribute('data-orig');
-                
-                // Swap text based on screen size
-                if (orig === "½ Fill") p.innerText = isMobile ? "🌗" : "½ Fill";
-                if (orig === "Full") p.innerText = isMobile ? "🌕" : "Full";
-                if (orig === "Empty") p.innerText = isMobile ? "🌑" : "Empty";
-            });
-
-            // 2. Locate the massive 12-column bowl block and yank it upward by -100px
-            const blocks = parent.querySelectorAll('div[data-testid="stHorizontalBlock"]');
-            blocks.forEach(block => {
-                const columns = block.querySelectorAll(':scope > div[data-testid="column"]');
-                if (columns.length > 5) { // Confirms this is the 12-bowl layout
-                    if (isMobile) {
-                        block.style.setProperty('margin-top', '-100px', 'important');
-                        block.style.setProperty('position', 'relative', 'important');
-                        block.style.setProperty('z-index', '10', 'important');
-                    } else {
-                        block.style.setProperty('margin-top', '0px', 'important');
-                    }
-                }
-            });
-        }
-        
-        // Execute immediately, on resize, and periodically to catch Streamlit state re-renders
-        applyMobileFixes();
-        window.parent.addEventListener('resize', applyMobileFixes);
-        setInterval(applyMobileFixes, 500); 
-    </script>
-    """,
-    height=0, width=0
-)
