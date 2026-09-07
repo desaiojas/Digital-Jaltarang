@@ -53,28 +53,17 @@ st.markdown("""
     }
 
     /* ===================================== */
-    /* BOWL BUTTONS — WIDER, COLUMNS UNCHANGED */
+    /* BOWL BUTTONS & TEXT FORCING           */
     /* ===================================== */
 
     [data-testid="column"] {
         overflow: visible !important;
     }
 
-    [data-testid="column"] [data-testid="stButton"] {
-        width: 120px !important;
-        min-width: 120px !important;
-        max-width: 120px !important;
-    }
-
     [data-testid="column"] [data-testid="stButton"] > button {
-        width: 120px !important;
-        min-width: 120px !important;
-        max-width: 120px !important;
-        flex: 0 0 120px !important;
         box-sizing: border-box !important;
         padding-left: 2px !important;
         padding-right: 2px !important;
-
         white-space: normal !important;
         overflow: visible !important;
         text-overflow: clip !important;
@@ -101,29 +90,34 @@ st.markdown("""
     }
 
     /* ===================================== */
-    /* MOBILE & TABLET — HORIZONTAL SCROLLING*/
+    /* UNIVERSAL HORIZONTAL SCROLLING FIX    */
     /* ===================================== */
 
-    @media (max-width: 1200px) {
-        /* 1. Force the container to stay a horizontal row and allow scrolling */
-        [data-testid="stHorizontalBlock"] {
-            display: flex !important;
-            flex-direction: row !important; /* Overrides Streamlit's vertical stacking */
-            flex-wrap: nowrap !important;   /* Prevents wrapping to a new line */
-            overflow-x: auto !important;    /* Enables horizontal swiping */
-            overflow-y: hidden !important;
-            -webkit-overflow-scrolling: touch !important; /* Smooth iOS scrolling */
-            padding-bottom: 20px !important; /* Gives breathing room for the scrollbar */
-            width: 100% !important;
-        }
-        
-        /* 2. Force every single bowl column to stay exactly 120px wide */
-        [data-testid="stHorizontalBlock"] > [data-testid="column"] {
-            min-width: 120px !important;
-            max-width: 120px !important;
-            width: 120px !important;
-            flex: 0 0 120px !important; /* Strictly prevents shrinking or growing */
-        }
+    /* 1. Un-clip Streamlit's parent containers so scrollbars can physically render */
+    .stApp, 
+    [data-testid="stAppViewContainer"], 
+    [data-testid="stAppViewMain"], 
+    .main, 
+    .block-container {
+        overflow-x: visible !important;
+    }
+
+    /* 2. Force ALL column containers to be a scrolling row instead of wrapping/squishing */
+    [data-testid="stHorizontalBlock"] {
+        display: flex !important;
+        flex-direction: row !important; 
+        flex-wrap: nowrap !important;   
+        overflow-x: auto !important;    
+        overflow-y: hidden !important;
+        -webkit-overflow-scrolling: touch !important; 
+        padding-bottom: 20px !important; /* Space for the scrollbar */
+        width: 100% !important;
+    }
+    
+    /* 3. Give every column a strict minimum width so they overflow rather than squeeze */
+    [data-testid="stHorizontalBlock"] > [data-testid="column"] {
+        min-width: 120px !important;
+        flex-shrink: 0 !important; /* This absolutely prevents the browser from squishing it */
     }
 </style>
 """, unsafe_allow_html=True)
@@ -249,7 +243,7 @@ st.markdown("""
     color: #2c1e16;
     font-size: 15px;
 ">
-    Reminder: Hold your phone/device horizontally for the best experience.
+    Reminder: Swiping left and right on the bowls will reveal the full scale.
 </div>
 """, unsafe_allow_html=True)
 
