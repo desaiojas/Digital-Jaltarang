@@ -246,9 +246,9 @@ for i in range(12):
             st.session_state.last_hz = hz
             play_audio(note)
 
-        st.button("½ Fill", key=f"h_{i}", use_container_width=True, on_click=water_change, args=(i, 1))
-        st.button("Full", key=f"f_{i}", use_container_width=True, on_click=water_change, args=(i, 2))
-        st.button("Empty", key=f"e_{i}", use_container_width=True, on_click=water_change, args=(i, 0))
+        st.button("½ Fill", key=f"h_{i}", use_container_width=False, on_click=water_change, args=(i, 1))
+        st.button("Full", key=f"f_{i}", use_container_width=False, on_click=water_change, args=(i, 2))
+        st.button("Empty", key=f"e_{i}", use_container_width=False, on_click=water_change, args=(i, 0))
 
 st.divider()
 st.markdown(f"### Frequency Visualizer: {st.session_state.last_hz} Hz")
