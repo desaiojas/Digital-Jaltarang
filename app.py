@@ -134,18 +134,20 @@ st.markdown("""
             min-height: 0px !important;
         }
         
-        /* 4. Force shrink button fonts heavily */
-        div[data-testid="column"] [data-testid="stButton"] > button * {
+        /* 4. Force shrink button fonts heavily - Match specificity of desktop rule to override it */
+        div[data-testid="column"] [data-testid="stButton"] > button p {
             font-size: 8px !important;
             line-height: 1.0 !important;
             margin: 0 !important;
             padding: 0 !important;
+            -webkit-text-size-adjust: none !important; /* Stops iOS from auto-inflating tiny text */
         }
 
         /* 5. Force shrink captions (Hz text) */
-        div[data-testid="stCaptionContainer"] * {
+        div[data-testid="stCaptionContainer"] p {
             font-size: 9px !important;
             line-height: 1.1 !important;
+            margin-bottom: 2px !important;
         }
     }
 </style>
@@ -350,13 +352,13 @@ for i in range(12):
                 
                 /* 
                   Mobile Size: Only triggers when the column iframe is squeezed tighter than 80px.
-                  Because desktop columns are strictly 120px, desktop is completely unaffected.
                 */
                 @media (max-width: 80px) {{
                     .bowl {{
-                        width: 28px !important;
-                        height: 28px !important;
-                        top: calc({y_offsets[i]}px * 0.4) !important;
+                        width: 36px !important;
+                        height: 36px !important;
+                        top: auto !important; /* Discards the desktop vertical offset */
+                        bottom: 0px !important; /* Forces the bowl all the way down to close the gap */
                         border-width: 2px !important;
                         box-shadow: 
                             inset -3px -3px 8px rgba(0,0,0,0.6),
