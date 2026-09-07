@@ -106,28 +106,47 @@ st.markdown("""
 
     /* ===================================== */
     /* MOBILE SHRINK-TO-FIT & SPACING HACKS  */
+    /* Everything below is scoped to mobile  */
+    /* widths only. Desktop is untouched.    */
     /* ===================================== */
 
     @media (max-width: 768px) {
-        /* 1. Force columns to stay in one row and pull up towards the title */
+        /* 1. Force columns to stay in one row and pull the whole bowl row up towards the title */
         div[data-testid="stHorizontalBlock"] {
             flex-wrap: nowrap !important;
             gap: 1px !important;
             margin-top: -15px !important; 
         }
 
-        /* 2. ROOT CAUSE FIX: Yank all elements beneath the bowl upward by -95px */
-        div[data-testid="column"] div[data-testid="stCaptionContainer"] {
-            margin-top: -95px !important; /* Physically drags the captions & buttons up into the iframe gap */
-            position: relative;
-            z-index: 10;
-        }
-
         /* Hide the massive gap below the reminder on mobile */
         .title-spacer {
             display: none !important;
         }
-        
+
+        /* 2. ROOT-CAUSE FIX for the "dead space" below the bowls.
+           The bowl embed (components.html) is a fixed-height iframe
+           (190px), which is needed on desktop for the full-size bowl
+           graphic. On mobile the bowl graphic itself shrinks down to
+           ~36px (see the .bowl media query below), but the iframe's
+           outer box still reserves the full 190px of vertical space,
+           which is what was pushing the caption / fill-buttons /
+           divider / frequency chart down the page.
+           Shrinking the iframe's rendered height here means the
+           browser naturally reflows EVERYTHING that comes after it
+           (caption, the 3 buttons, the divider, and the frequency
+           chart at the bottom of the page) upward automatically —
+           no need to hand-tune a separate negative margin for each
+           element. This is scoped to the bowl grid container only,
+           so the header row (Go Home / Reset Bowls) is untouched. */
+        [class*="st-key-bowl_grid"] [data-testid="column"] iframe {
+            height: 95px !important;
+        }
+
+        /* Small cosmetic tightening between the iframe and the note/Hz caption */
+        [class*="st-key-bowl_grid"] [data-testid="column"] div[data-testid="stCaptionContainer"] {
+            margin-top: -4px !important;
+        }
+
         /* 3. Unlock the hardcoded widths so they can squish */
         div[data-testid="column"] {
             min-width: 0px !important;
@@ -142,15 +161,16 @@ st.markdown("""
             max-width: none !important;
         }
 
-        /* 4. TRUE EMOJI REPLACEMENT */
-        
+        /* 4. TRUE EMOJI REPLACEMENT (bowl grid only, so the header
+           buttons like "Go Home" / "Reset Bowls" keep their text) */
+
         /* Visually obliterate the inner text div so Streamlit can't override it */
-        div[data-testid="column"] [data-testid="stButton"] > button > div {
+        [class*="st-key-bowl_grid"] [data-testid="stButton"] > button > div {
             display: none !important;
         }
 
         /* Configure the empty button shell to hold the emoji */
-        div[data-testid="column"] [data-testid="stButton"] > button {
+        [class*="st-key-bowl_grid"] [data-testid="stButton"] > button {
             width: 100% !important;
             min-width: 0px !important;
             max-width: none !important;
@@ -162,10 +182,21 @@ st.markdown("""
             justify-content: center !important;
         }
 
-        /* Mount emojis securely onto the button elements by counting row positions */
-        div[data-testid="column"] .element-container:nth-child(3) button::after { content: "🌗"; font-size: 16px; }
-        div[data-testid="column"] .element-container:nth-child(4) button::after { content: "🌕"; font-size: 16px; }
-        div[data-testid="column"] .element-container:nth-child(5) button::after { content: "🌑"; font-size: 16px; }
+        /* Mount emojis using each button's own Streamlit `key`
+           (h_/f_/e_) instead of guessing sibling position — this is
+           robust no matter how Streamlit nests things internally. */
+        [class*="st-key-bowl_grid"] [class*="st-key-h_"] button::after {
+            content: "🌗";
+            font-size: 16px;
+        }
+        [class*="st-key-bowl_grid"] [class*="st-key-f_"] button::after {
+            content: "🌕";
+            font-size: 16px;
+        }
+        [class*="st-key-bowl_grid"] [class*="st-key-e_"] button::after {
+            content: "🌑";
+            font-size: 16px;
+        }
 
         /* 5. Force shrink captions (Hz text) */
         div[data-testid="stCaptionContainer"] p {
@@ -296,125 +327,129 @@ st.markdown("<div class='title-spacer'></div>", unsafe_allow_html=True)
 st.session_state.audio_player = st.empty() 
 
 # 12 bowls layout
-cols = st.columns(12, gap="small")
-y_offsets = [80, 76, 68, 52, 30, 0, 0, 30, 52, 68, 76, 80]
+# Wrapped in a keyed container so the mobile-only CSS above can target
+# *just* this section (iframe height, emoji buttons) without touching
+# the header row's "Go Home" / "Reset Bowls" buttons.
+with st.container(key="bowl_grid"):
+    cols = st.columns(12, gap="small")
+    y_offsets = [80, 76, 68, 52, 30, 0, 0, 30, 52, 68, 76, 80]
 
-# 0: Ceramic White/Gray, 1: Vibrant Aqua, 2: Deep Sapphire
-colors = {0: "#F8F9FA", 1: "#00B4D8", 2: "#03045E"} 
+    # 0: Ceramic White/Gray, 1: Vibrant Aqua, 2: Deep Sapphire
+    colors = {0: "#F8F9FA", 1: "#00B4D8", 2: "#03045E"}
 
-for i in range(12):
-    with cols[i]:
-        note = st.session_state.notes[i]
-        level = st.session_state.water_states[i]
-        hz = find_hz(note)
-        note_label = get_note_label(note)
+    for i in range(12):
+        with cols[i]:
+            note = st.session_state.notes[i]
+            level = st.session_state.water_states[i]
+            hz = find_hz(note)
+            note_label = get_note_label(note)
 
-        try:
-            with open(note, "rb") as f:
-                audio_b64 = base64.b64encode(f.read()).decode()
-        except FileNotFoundError:
-            audio_b64 = ""
+            try:
+                with open(note, "rb") as f:
+                    audio_b64 = base64.b64encode(f.read()).decode()
+            except FileNotFoundError:
+                audio_b64 = ""
 
-        bowl_html = f"""
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <style>
-                html, body {{
-                    margin: 0;
-                    padding: 0;
-                    width: 100%;
-                    height: 190px;
-                    background: transparent !important;
-                    overflow: hidden;
-                }}
-
-                .bowl-stage {{
-                    position: relative;
-                    width: 100%;
-                    height: 190px;
-                    overflow: visible;
-                }}
-
-                /* Default Desktop Size */
-                .bowl {{
-                    position: absolute;
-                    top: {y_offsets[i]}px;
-                    left: 50%;
-                    transform: translateX(-50%);
-                    width: 88px;
-                    height: 88px;
-                    border-radius: 50%;
-                    background: radial-gradient(
-                        circle at 30% 30%,
-                        #ffffff 10%,
-                        {colors[level]} 80%,
-                        #1a1a1a 100%
-                    );
-                    border: 3px solid #8D99AE;
-                    box-shadow:
-                        inset -8px -8px 20px rgba(0,0,0,0.6),
-                        5px 5px 15px rgba(0,0,0,0.3);
-                    cursor: pointer;
-                    box-sizing: border-box;
-                    transition: transform 0.08s ease;
-                }}
-
-                .bowl:active {{
-                    transform: translateX(-50%) scale(0.97);
-                }}
-                
-                /* Mobile Size overrides */
-                @media (max-width: 80px) {{
-                    .bowl {{
-                        width: 36px !important;
-                        height: 36px !important;
-                        /* The 0.4 multiplier shrinks the vertical curve so the bowls don't clip */
-                        top: calc(10px + ({y_offsets[i]}px * 0.4)) !important; 
-                        bottom: auto !important; 
-                        border-width: 2px !important;
-                        box-shadow: 
-                            inset -3px -3px 8px rgba(0,0,0,0.6),
-                            2px 2px 5px rgba(0,0,0,0.3) !important;
+            bowl_html = f"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <style>
+                    html, body {{
+                        margin: 0;
+                        padding: 0;
+                        width: 100%;
+                        height: 190px;
+                        background: transparent !important;
+                        overflow: hidden;
                     }}
-                }}
-            </style>
-        </head>
 
-        <body>
-            <div class="bowl-stage">
-                <div class="bowl" id="bowl"></div>
-            </div>
+                    .bowl-stage {{
+                        position: relative;
+                        width: 100%;
+                        height: 190px;
+                        overflow: visible;
+                    }}
 
-            <script>
-                const bowl = document.getElementById("bowl");
-                const audio = new Audio(
-                    "data:audio/wav;base64,{audio_b64}"
-                );
+                    /* Default Desktop Size */
+                    .bowl {{
+                        position: absolute;
+                        top: {y_offsets[i]}px;
+                        left: 50%;
+                        transform: translateX(-50%);
+                        width: 88px;
+                        height: 88px;
+                        border-radius: 50%;
+                        background: radial-gradient(
+                            circle at 30% 30%,
+                            #ffffff 10%,
+                            {colors[level]} 80%,
+                            #1a1a1a 100%
+                        );
+                        border: 3px solid #8D99AE;
+                        box-shadow:
+                            inset -8px -8px 20px rgba(0,0,0,0.6),
+                            5px 5px 15px rgba(0,0,0,0.3);
+                        cursor: pointer;
+                        box-sizing: border-box;
+                        transition: transform 0.08s ease;
+                    }}
 
-                bowl.addEventListener("click", function() {{
-                    audio.currentTime = 0;
-                    audio.play().catch(function(error) {{
-                        console.log("Audio playback failed:", error);
+                    .bowl:active {{
+                        transform: translateX(-50%) scale(0.97);
+                    }}
+                    
+                    /* Mobile Size overrides */
+                    @media (max-width: 80px) {{
+                        .bowl {{
+                            width: 36px !important;
+                            height: 36px !important;
+                            /* The 0.4 multiplier shrinks the vertical curve so the bowls don't clip */
+                            top: calc(10px + ({y_offsets[i]}px * 0.4)) !important; 
+                            bottom: auto !important; 
+                            border-width: 2px !important;
+                            box-shadow: 
+                                inset -3px -3px 8px rgba(0,0,0,0.6),
+                                2px 2px 5px rgba(0,0,0,0.3) !important;
+                        }}
+                    }}
+                </style>
+            </head>
+
+            <body>
+                <div class="bowl-stage">
+                    <div class="bowl" id="bowl"></div>
+                </div>
+
+                <script>
+                    const bowl = document.getElementById("bowl");
+                    const audio = new Audio(
+                        "data:audio/wav;base64,{audio_b64}"
+                    );
+
+                    bowl.addEventListener("click", function() {{
+                        audio.currentTime = 0;
+                        audio.play().catch(function(error) {{
+                            console.log("Audio playback failed:", error);
+                        }});
                     }});
-                }});
-            </script>
-        </body>
-        </html>
-        """
+                </script>
+            </body>
+            </html>
+            """
 
-        components.html(
-            bowl_html,
-            width="stretch",
-            height=190,
-            scrolling=False
-        )
+            components.html(
+                bowl_html,
+                width="stretch",
+                height=190,
+                scrolling=False
+            )
 
-        st.caption(f"<div style='text-align: center; color: #2c1e16;'><b>{note_label}</b><br>{hz} Hz</div>", unsafe_allow_html=True)
+            st.caption(f"<div style='text-align: center; color: #2c1e16;'><b>{note_label}</b><br>{hz} Hz</div>", unsafe_allow_html=True)
 
-        st.button("½ Fill", key=f"h_{i}", use_container_width=True, on_click=water_change, args=(i, 1))
-        st.button("Full", key=f"f_{i}", use_container_width=True, on_click=water_change, args=(i, 2))
-        st.button("Empty", key=f"e_{i}", use_container_width=True, on_click=water_change, args=(i, 0))
+            st.button("½ Fill", key=f"h_{i}", use_container_width=True, on_click=water_change, args=(i, 1))
+            st.button("Full", key=f"f_{i}", use_container_width=True, on_click=water_change, args=(i, 2))
+            st.button("Empty", key=f"e_{i}", use_container_width=True, on_click=water_change, args=(i, 0))
 
 st.divider()
 st.markdown(f"### Frequencies: {st.session_state.last_hz} Hz")
