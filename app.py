@@ -212,6 +212,8 @@ with control_col2:
     if st.button("Reset All Bowls"):
         reset()
         st.rerun()
+
+st.markdown("<div style='margin-top: 25px;'></div>", unsafe_allow_html=True)
 st.session_state.audio_player = st.empty() 
 
 # 12 bowls layout
