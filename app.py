@@ -55,36 +55,21 @@ st.markdown("""
     /* BOWL BUTTONS — WIDER, COLUMNS UNCHANGED */
     /* ===================================== */
 
-    /* ===================================== */
-    /* BOWL BUTTONS — WIDER, COLUMNS UNCHANGED */
-    /* ===================================== */
-    
-    [data-testid="column"] .stButton > button {
+    [data-testid="column"] {
+        overflow: visible !important;
+    }
+
+    [data-testid="column"] [data-testid="stButton"] {
         width: 120px !important;
         min-width: 120px !important;
         max-width: 120px !important;
-    
-        white-space: nowrap !important;
-        overflow: visible !important;
-        text-overflow: clip !important;
     }
-    
-    /* Override Streamlit's text clipping at EVERY level */
-    [data-testid="column"] .stButton > button *,
-    [data-testid="column"] .stButton > button p,
-    [data-testid="column"] .stButton > button span,
-    [data-testid="column"] .stButton > button div {
-        white-space: nowrap !important;
-        overflow: visible !important;
-        text-overflow: clip !important;
-        max-width: none !important;
-    }
-    
-    /* Keep the actual label at normal size */
-    [data-testid="column"] .stButton > button p {
-        font-size: 14px !important;
-        color: #2c1e16 !important;
-    }
+
+    [data-testid="column"] [data-testid="stButton"] > button {
+        width: 120px !important;
+        min-width: 120px !important;
+        max-width: 120px !important;
+        flex: 0 0 120px !important;
 
         white-space: nowrap !important;
         overflow: visible !important;
@@ -92,10 +77,10 @@ st.markdown("""
     }
 
     /* Override Streamlit's text clipping at EVERY level */
-    [data-testid="column"] .stButton > button *,
-    [data-testid="column"] .stButton > button p,
-    [data-testid="column"] .stButton > button span,
-    [data-testid="column"] .stButton > button div {
+    [data-testid="column"] [data-testid="stButton"] > button *,
+    [data-testid="column"] [data-testid="stButton"] > button p,
+    [data-testid="column"] [data-testid="stButton"] > button span,
+    [data-testid="column"] [data-testid="stButton"] > button div {
         white-space: nowrap !important;
         overflow: visible !important;
         text-overflow: clip !important;
@@ -103,7 +88,7 @@ st.markdown("""
     }
 
     /* Keep the actual label at normal size */
-    [data-testid="column"] .stButton > button p {
+    [data-testid="column"] [data-testid="stButton"] > button p {
         font-size: 14px !important;
         color: #2c1e16 !important;
     }
@@ -215,7 +200,7 @@ with st.sidebar:
     if st.button("Return to Instructions"):
         st.session_state.started = False
         st.rerun()
-    
+
     st.divider()
     if st.button("Reset All Bowls"):
         reset()
@@ -237,7 +222,7 @@ for i in range(12):
         level = st.session_state.water_states[i]
         hz = find_hz(note)
         note_label = get_note_label(note)
-        
+
         bowl_html = f"""
         <div style='
             margin-top: {y_offsets[i]}px; 
@@ -256,11 +241,11 @@ for i in range(12):
         """
         st.markdown(bowl_html, unsafe_allow_html=True)
         st.caption(f"<div style='text-align: center; color: #2c1e16;'><b>{note_label}</b><br>{hz} Hz</div>", unsafe_allow_html=True)
-        
+
         if st.button("▶", key=f"p_{i}", use_container_width=True):
             st.session_state.last_hz = hz
             play_audio(note)
-            
+
         st.button("½ Fill", key=f"h_{i}", use_container_width=True, on_click=water_change, args=(i, 1))
         st.button("Full", key=f"f_{i}", use_container_width=True, on_click=water_change, args=(i, 2))
         st.button("Empty", key=f"e_{i}", use_container_width=True, on_click=water_change, args=(i, 0))
