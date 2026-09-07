@@ -28,17 +28,18 @@ st.markdown("""
         background-color: #f8f9fa !important;
         color: #2c1e16 !important;
         border: 1px solid #b5956c !important;
-        white-space: nowrap !important;
-        overflow: visible !important;
-        font-size: 11px !important;
+        font-size: 14px !important;
         padding-left: 2px !important;
         padding-right: 2px !important;
     }
 
+    /* Prevent Streamlit from changing button text to "Em..." */
     .stButton > button p {
+        color: #2c1e16 !important;
         white-space: nowrap !important;
         overflow: visible !important;
-        font-size: 11px !important;
+        text-overflow: clip !important;
+        font-size: 14px !important;
     }
     
     .stButton > button:hover {
