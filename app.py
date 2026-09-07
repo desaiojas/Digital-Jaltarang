@@ -201,7 +201,9 @@ if not st.session_state.started:
         st.rerun()
     st.stop()
 
-control_col1, control_col2 = st.columns([1, 1])
+title_col, spacer_col, control_col1, control_col2 = st.columns([3, 1, 1, 1])
+with title_col:
+    st.markdown("### Bowls (C Major Scale)")
 with control_col1:
     if st.button("Return to Instructions"):
         st.session_state.started = False
@@ -210,8 +212,6 @@ with control_col2:
     if st.button("Reset All Bowls"):
         reset()
         st.rerun()
-
-st.markdown("### Bowls (C Major Scale)")
 st.session_state.audio_player = st.empty() 
 
 # 12 bowls layout
