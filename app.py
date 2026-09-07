@@ -231,7 +231,7 @@ st.markdown("<div style='margin-top: 25px;'></div>", unsafe_allow_html=True)
 st.session_state.audio_player = st.empty() 
 
 # 12 bowls layout
-cols = st.columns(12)
+cols = st.columns(12, gap="small")
 y_offsets = [0, 40, 70, 90, 100, 105, 105, 100, 90, 70, 40, 0]
 
 # 0: Ceramic White/Gray, 1: Vibrant Aqua, 2: Deep Sapphire
@@ -259,7 +259,7 @@ for i in range(12):
                     margin: 0;
                     padding: 0;
                     width: 100%;
-                    height: 225px;
+                    height: 210px;
                     background: transparent !important;
                     overflow: hidden;
                 }}
@@ -267,7 +267,7 @@ for i in range(12):
                 .bowl-stage {{
                     position: relative;
                     width: 100%;
-                    height: 225px;
+                    height: 210px;
                     overflow: visible;
                 }}
 
@@ -276,8 +276,8 @@ for i in range(12):
                     top: {y_offsets[i]}px;
                     left: 50%;
                     transform: translateX(-50%);
-                    width: 120px;
-                    height: 120px;
+                    width: 95px;
+                    height: 95px;
                     border-radius: 50%;
                     background: radial-gradient(
                         circle at 30% 30%,
@@ -324,8 +324,8 @@ for i in range(12):
 
         components.html(
             bowl_html,
-            width=120,
-            height=225,
+            width="stretch",
+            height=210,
             scrolling=False
         )
 
