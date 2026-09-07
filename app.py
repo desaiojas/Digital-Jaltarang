@@ -109,25 +109,19 @@ st.markdown("""
     /* ===================================== */
 
     @media (max-width: 768px) {
-        /* Reduce universal top padding to pull title up */
-        .block-container {
-            padding-top: 2rem !important;
-        }
-        
         /* 1. Force columns to stay in one row */
         div[data-testid="stHorizontalBlock"] {
             flex-wrap: nowrap !important;
             gap: 1px !important;
-            margin-top: -5px !important;
+            margin-top: -10px !important;
         }
 
-        /* 2. CHOP THE IFRAME HEIGHT: This is the magic fix that deletes the huge gap */
+        /* 2. ROOT CAUSE FIX: Physically chop the iframe height to automatically pull everything below it up */
         div[data-testid="column"] iframe {
-            height: 85px !important;
-            margin-bottom: -5px !important;
+            height: 90px !important;
         }
 
-        /* Hide the desktop spacer completely */
+        /* Hide the gap below the reminder on mobile */
         .title-spacer {
             display: none !important;
         }
@@ -156,37 +150,37 @@ st.markdown("""
             min-height: 32px !important;
         }
         
-        /* ======================================= */
-        /* BULLETPROOF CSS EMOJI SWAP FOR MOBILE   */
-        /* ======================================= */
+        /* ========================================== */
+        /* PURE CSS EMOJI SWAP FOR MOBILE             */
+        /* ========================================== */
         
         /* Visually crush and hide the original text */
         div[data-testid="column"] [data-testid="stButton"] > button p {
             font-size: 0px !important; 
-            visibility: hidden !important;
+            color: transparent !important;
             margin: 0 !important;
             padding: 0 !important;
             height: 0px !important;
         }
-
-        /* Reveal the emoji pseudo-element */
+        
+        /* Reveal the emoji via the pseudo-element */
         div[data-testid="column"] [data-testid="stButton"] > button p::after {
-            visibility: visible !important;
-            font-size: 18px !important; 
+            font-size: 16px !important; 
+            color: #2c1e16 !important;
             display: block !important;
             text-align: center !important;
             width: 100% !important;
             line-height: 1.2 !important;
         }
 
-        /* Count backward from the bottom of the column to perfectly target the 3 buttons */
-        /* 3rd from the bottom = ½ Fill */
+        /* Target exact buttons by counting up from the bottom of the column */
+        /* 3rd from bottom = ½ Fill */
         div[data-testid="column"] .element-container:nth-last-child(3) button p::after { content: "🌗" !important; }
         
-        /* 2nd from the bottom = Full */
+        /* 2nd from bottom = Full */
         div[data-testid="column"] .element-container:nth-last-child(2) button p::after { content: "🌕" !important; }
         
-        /* Last item in column = Empty */
+        /* Last item = Empty */
         div[data-testid="column"] .element-container:nth-last-child(1) button p::after { content: "🌑" !important; }
 
         /* 5. Force shrink captions (Hz text) */
@@ -198,6 +192,16 @@ st.markdown("""
     }
 </style>
 """, unsafe_allow_html=True)
+
+# File conversion
+# Get all M4A files in current directory
+# m4a_files = [f for f in os.listdir('.') if f.endswith('.m4a')]
+# Convert each file
+# for m4a_file in m4a_files:
+#     audio = AudioSegment.from_file(m4a_file, format="m4a")
+#     wav_file = m4a_file.replace('.m4a', '.wav')
+#     audio.export(wav_file, format="wav")
+#     print(f"Converted {m4a_file} to {wav_file}")
 
 # Sounds
 C = "C Jaltarang.wav"
@@ -386,16 +390,16 @@ for i in range(12):
                     transform: translateX(-50%) scale(0.97);
                 }}
                 
-                /* Mobile Size overrides */
+                /* Mobile Size overrides - Triggered strictly by width squishing */
                 @media (max-width: 80px) {{
                     html, body, .bowl-stage {{
-                        height: 85px !important; /* Force HTML elements to match the chopped iframe height */
+                        height: 90px !important; /* Lock the internal canvas height to the new smaller frame */
                     }}
                     .bowl {{
                         width: 32px !important;
                         height: 32px !important;
-                        /* Recreates the curve properly scaled for the smaller 85px space */
-                        top: calc(15px + ({y_offsets[i]}px * 0.3)) !important; 
+                        /* Perfectly aligns the parabolic curve inside the new 90px vertical space */
+                        top: calc(10px + ({y_offsets[i]}px * 0.3)) !important; 
                         bottom: auto !important; 
                         border-width: 2px !important;
                         box-shadow: 
