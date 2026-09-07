@@ -113,7 +113,9 @@ st.markdown("""
         div[data-testid="stHorizontalBlock"] {
             flex-wrap: nowrap !important;
             gap: 1px !important;
-            margin-top: -15px !important; /* Pulls the bowls up closer to the title */
+            margin-top: -45px !important; /* Heavily pulls the bowls and buttons up to close the gap */
+            position: relative;
+            z-index: 10;
         }
 
         /* Hide the massive gap below the reminder on mobile */
@@ -147,28 +149,32 @@ st.markdown("""
         
         /* 4. CSS Emoji Injection - Hides text and replaces with emojis */
         
-        /* Hide all button text */
+        /* Hide all button text structurally */
         div[data-testid="column"] [data-testid="stButton"] > button p {
+            visibility: hidden !important; 
             font-size: 0px !important; 
             margin: 0 !important;
             padding: 0 !important;
+            height: 18px; /* Maintain physical space for the emoji */
         }
         
-        /* Button 1: ½ Fill -> 🌗 */
-        div[data-testid="column"] div.element-container:nth-of-type(3) [data-testid="stButton"] button p::before {
-            content: "🌗";
+        /* Ensure the injected emoji is fully visible */
+        div[data-testid="column"] [data-testid="stButton"] > button p::before {
+            visibility: visible !important;
             font-size: 16px !important;
+            display: block;
+            text-align: center;
+            width: 100%;
         }
-        /* Button 2: Full -> 🌕 */
-        div[data-testid="column"] div.element-container:nth-of-type(4) [data-testid="stButton"] button p::before {
-            content: "🌕";
-            font-size: 16px !important;
-        }
-        /* Button 3: Empty -> 🌑 */
-        div[data-testid="column"] div.element-container:nth-of-type(5) [data-testid="stButton"] button p::before {
-            content: "🌑";
-            font-size: 16px !important;
-        }
+
+        /* Button 1: ½ Fill -> 🌗 (Targeting the 3rd element container in the column) */
+        div[data-testid="column"] .element-container:nth-child(3) button p::before { content: "🌗"; }
+        
+        /* Button 2: Full -> 🌕 (Targeting the 4th element container in the column) */
+        div[data-testid="column"] .element-container:nth-child(4) button p::before { content: "🌕"; }
+        
+        /* Button 3: Empty -> 🌑 (Targeting the 5th element container in the column) */
+        div[data-testid="column"] .element-container:nth-child(5) button p::before { content: "🌑"; }
 
         /* 5. Force shrink captions (Hz text) */
         div[data-testid="stCaptionContainer"] p {
