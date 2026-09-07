@@ -23,20 +23,23 @@ st.markdown("""
         color: #2c1e16 !important;
     }
     
-    /* Force buttons to be light with dark text, and reduce side padding to prevent truncation */
+    /* Default Button Theme (Applies globally to keep dark mode colors consistent) */
     .stButton > button {
         background-color: #f8f9fa !important;
         color: #2c1e16 !important;
         border: 1px solid #b5956c !important;
-        padding-left: 2px !important;
-        padding-right: 2px !important;
-        font-size: 14px !important;
     }
     
     .stButton > button:hover {
         background-color: #ffffff !important;
         border-color: #2c1e16 !important;
         color: #000000 !important;
+    }
+    
+    /* SPECIFIC FIX: Remove side padding ONLY for buttons inside the 12 columns to prevent truncation */
+    [data-testid="column"] .stButton > button {
+        padding-left: 0px !important;
+        padding-right: 0px !important;
     }
 </style>
 """, unsafe_allow_html=True)
