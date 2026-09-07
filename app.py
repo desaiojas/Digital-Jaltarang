@@ -101,10 +101,10 @@ st.markdown("""
     }
 
     /* ===================================== */
-    /* MOBILE — FORCED HORIZONTAL SCROLLING  */
+    /* MOBILE & TABLET — HORIZONTAL SCROLLING*/
     /* ===================================== */
 
-    @media (max-width: 768px) {
+    @media (max-width: 1200px) {
         /* 1. Force the container to stay a horizontal row and allow scrolling */
         [data-testid="stHorizontalBlock"] {
             display: flex !important;
