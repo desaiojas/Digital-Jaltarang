@@ -138,7 +138,7 @@ with st.sidebar:
         play_song(songs[selected_song])
 
 # Main Interface
-st.markdown("### The Instrument")
+st.markdown("### Bowls")
 st.session_state.audio_player = st.empty() # Invisible container for audio playback
 
 # Semicircle Layout
