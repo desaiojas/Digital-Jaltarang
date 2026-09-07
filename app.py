@@ -23,11 +23,6 @@ st.markdown("""
     h1, h2, h3, p, div.stMarkdown, .stSelectbox label {
         color: #2c1e16 !important;
     }
-    
-    /* Style the song selectbox text */
-    div[data-baseweb="select"] {
-        background-color: #f8f9fa;
-    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -65,6 +60,7 @@ FSH = "F#H Jaltarang.wav"
 GH = "GH Jaltarang.wav"
 
 ALL_PITCHES = [BL, C, CS, D, DS, E, F, FS, G, GS, A, AS, B, CH, CSH, DH, DSH, EH, FH, FSH, GH]
+# Set explicitly to a C Major Scale
 BASE_NOTES = [C, D, E, F, G, A, B, CH, DH, EH, FH, GH]
 
 if 'started' not in st.session_state:
@@ -93,6 +89,12 @@ def find_hz(note):
 def generate_wave(hz):
     return [math.sin(math.radians(i * (hz / 100.0))) * 100 for i in range(300)]
 
+def get_note_label(note_filename):
+    clean_name = note_filename.replace(" Jaltarang.wav", "")
+    if "H" in clean_name:
+        return clean_name.replace("H", "") + " (High)"
+    return clean_name
+
 def water_change(ind, fill_level):
     base_note = BASE_NOTES[ind]
     try:
@@ -109,28 +111,12 @@ def reset():
     st.session_state.notes = BASE_NOTES.copy()
     st.session_state.water_states = [0]*12
 
-songs = {
-    "Hot Cross Buns": [E, D, C, "w", E, D, C, "w", C, C, C, C, D, D, D, D, E, D, C],
-    "Twinkle Twinkle": [C, C, G, G, A, A, G, "w", F, F, E, E, D, D, C, "w", G, G, F, F, E, E, D, "w", G, G, F, F, E, E, D, "w", C, C, G, G, A, A, G, "w", F, F, E, E, D, D, C],
-    "Mary Had A Little Lamb": [E, D, C, D, E, E, E, "w", D, D, D, "w", E, G, G, "w", E, D, C, D, E, E, E, E, D, D, E, D, C],
-    "Jingle Bells": [E, E, E, "w", E, E, E, "w", E, G, C, D, E, "w", "w", "w", F, F, F, F, F, E, E, E, E, D, D, E, D, "w", G]
-}
-
-def play_song(song_notes):
-    for note in song_notes:
-        if note == "w":
-            time.sleep(0.4)
-        else:
-            play_audio(note)
-            st.session_state.last_hz = find_hz(note)
-            time.sleep(0.4)
-
 if not st.session_state.started:
     st.title("Digital Jaltarang")
     st.write("Welcome to the Digital Jaltarang! This instrument consists of bowls filled with water to create musical notes.")
     st.write("**Instructions:**")
     st.write("1. Click the **Play** button below any bowl to hear its sound.")
-    st.write("2. Use **½ Fill** to lower the pitch by a half-step.")
+    st.write("2. Use **½ Fill** to lower the pitch by a half-step to easily tune the major scale into a minor scale.")
     st.write("3. Use **Full** to lower the pitch by a full step.")
     st.write("4. Use **Empty** to return the bowl to its base note.")
     st.write("5. Watch the physical sound waves react in real-time as you play!")
@@ -149,14 +135,8 @@ with st.sidebar:
     if st.button("Reset All Bowls"):
         reset()
         st.rerun()
-        
-    st.divider()
-    st.subheader("Play Example Songs")
-    selected_song = st.selectbox("Choose a song:", list(songs.keys()))
-    if st.button(f"Play {selected_song}"):
-        play_song(songs[selected_song])
 
-st.markdown("### The Instrument")
+st.markdown("### The Instrument (C Major Scale)")
 st.session_state.audio_player = st.empty() 
 
 cols = st.columns(12)
@@ -170,6 +150,7 @@ for i in range(12):
         note = st.session_state.notes[i]
         level = st.session_state.water_states[i]
         hz = find_hz(note)
+        note_label = get_note_label(note)
         
         bowl_html = f"""
         <div style='
@@ -188,7 +169,7 @@ for i in range(12):
         </div>
         """
         st.markdown(bowl_html, unsafe_allow_html=True)
-        st.caption(f"<div style='text-align: center; color: #2c1e16;'><b>{hz} hz</b></div>", unsafe_allow_html=True)
+        st.caption(f"<div style='text-align: center; color: #2c1e16;'><b>{note_label}</b><br>{hz} Hz</div>", unsafe_allow_html=True)
         
         if st.button("▶", key=f"p_{i}", use_container_width=True):
             st.session_state.last_hz = hz
