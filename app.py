@@ -36,22 +36,37 @@ st.markdown("""
         border-color: #2c1e16 !important;
     }
 
-    /* SIDEBAR BUTTONS — KEEP WIDE */
+    /* ===================================== */
+    /* SIDEBAR BUTTONS — KEEP WIDE           */
+    /* ===================================== */
+
     [data-testid="stSidebar"] .stButton > button {
         min-width: 200px !important;
     }
 
-    /* START PLAYING — KEEP WIDE */
+    /* ===================================== */
+    /* START PLAYING — KEEP WIDE             */
+    /* ===================================== */
+
     .stButton > button[kind="primary"] {
         min-width: 170px !important;
     }
 
-    /* HIDDEN PLAY BUTTONS FOR WAVEFORM SYNC */
+    /* ===================================== */
+    /* HIDDEN SYNC BUTTONS                   */
+    /* ===================================== */
     div[class*="st-key-hidden_buttons"] {
         display: none !important;
+        position: absolute !important;
+        height: 0px !important;
+        width: 0px !important;
+        overflow: hidden !important;
     }
 
-    /* DEFAULT DESKTOP BOWL LAYOUT */
+    /* ===================================== */
+    /* DEFAULT DESKTOP BOWL LAYOUT           */
+    /* ===================================== */
+
     [data-testid="column"] {
         overflow: visible !important;
     }
@@ -100,12 +115,10 @@ st.markdown("""
         margin-top: 25px;
     }
 
-    [class*="st-key-bowl_grid"] [data-testid="stVerticalBlock"] {
-        gap: 5px; 
-    }
-
     /* ===================================== */
     /* MOBILE SHRINK-TO-FIT & SPACING HACKS  */
+    /* Everything below is scoped to mobile  */
+    /* widths only. Desktop is untouched.    */
     /* ===================================== */
 
     @media (max-width: 768px) {
@@ -113,36 +126,41 @@ st.markdown("""
         div[data-testid="stHorizontalBlock"] {
             flex-wrap: nowrap !important;
             gap: 1px !important;
-            margin-top: -10px !important; 
+            margin-top: -15px !important; 
         }
 
         .title-spacer {
             display: none !important;
         }
 
-        /* Revert the massive negative margin hack so things flow naturally */
+        /* Pulls the lower content upward slightly to cover residual gaps */
         [class*="st-key-lower_content"] {
-            margin-top: 15px !important; 
+            margin-top: -30px !important; 
         }
 
         /* 2. ROOT-CAUSE FIX FOR YANKING EVERYTHING UP
-           Crush the iframe and all its Streamlit wrappers natively 
-           so the document flow correctly pulls lower content upward. */
-        [class*="st-key-bowl_grid"] [data-testid="column"] > div.element-container:nth-child(1),
-        [class*="st-key-bowl_grid"] [data-testid="column"] > div.element-container:nth-child(1) > div,
-        [class*="st-key-bowl_grid"] [data-testid="column"] > div.element-container:nth-child(1) iframe {
-            height: 70px !important;
-            min-height: 70px !important;
-            max-height: 70px !important;
+           Pierces Streamlit's stVerticalBlock wrapper (by removing the > combinator) 
+           to successfully crush the iframes and document flow natively. */
+        [class*="st-key-bowl_grid"] [data-testid="column"] div.element-container:nth-child(1),
+        [class*="st-key-bowl_grid"] [data-testid="column"] div.element-container:nth-child(1) > div,
+        [class*="st-key-bowl_grid"] [data-testid="column"] div.element-container:nth-child(1) iframe {
+            height: 65px !important;
+            min-height: 65px !important;
+            max-height: 65px !important;
             margin-bottom: 0px !important;
         }
 
-        /* 3. Tighten the flex gap between the bowls and buttons strictly to 0 */
+        /* Eliminate vertical flex gaps inside the columns completely */
         [class*="st-key-bowl_grid"] [data-testid="stVerticalBlock"] {
             gap: 0px !important;
         }
 
-        /* 4. Unlock the hardcoded widths so they can squish */
+        /* Small cosmetic tightening between the iframe and the note/Hz caption */
+        [class*="st-key-bowl_grid"] [data-testid="column"] div[data-testid="stCaptionContainer"] {
+            margin-top: -4px !important;
+        }
+
+        /* 3. Unlock the hardcoded widths so they can squish */
         div[data-testid="column"] {
             min-width: 0px !important;
             max-width: none !important;
@@ -156,7 +174,7 @@ st.markdown("""
             max-width: none !important;
         }
 
-        /* 5. TRUE EMOJI REPLACEMENT (bowl grid only) */
+        /* 4. TRUE EMOJI REPLACEMENT (bowl grid only) */
         [class*="st-key-bowl_grid"] [data-testid="stButton"] > button > div {
             display: none !important;
         }
@@ -177,13 +195,11 @@ st.markdown("""
         [class*="st-key-bowl_grid"] [class*="st-key-f_"] button::after { content: "🌕"; font-size: 18px; }
         [class*="st-key-bowl_grid"] [class*="st-key-e_"] button::after { content: "🌑"; font-size: 18px; }
 
-        /* 6. Force shrink captions */
+        /* 5. Force shrink captions */
         div[data-testid="stCaptionContainer"] p {
             font-size: 9px !important;
             line-height: 1.1 !important;
             margin-bottom: 2px !important;
-            margin-top: 0px !important;
-            padding: 0px !important;
         }
     }
 </style>
@@ -267,7 +283,7 @@ if not st.session_state.started:
     st.write("This instrument consists of bowls filled with water to create musical notes.")
     st.write("**Instructions:**")
     st.write("1. Click any **bowl** to hear its sound.")
-    st.write("2. Use **½ Fill / 🌗** to lower the pitch by a half-step (easily tune the major scale into a minor scale).")
+    st.write("2. Use **½ Fill / 🌗** to lower the pitch by a half-step.")
     st.write("3. Use **Full / 🌕** to lower the pitch by a full step.")
     st.write("4. Use **Empty / 🌑** to return the bowl to its base note.")
     st.write("5. Watch the physical sound waves react in real-time as you play!")
@@ -304,7 +320,6 @@ st.markdown("""
 st.markdown("<div class='title-spacer'></div>", unsafe_allow_html=True)
 st.session_state.audio_player = st.empty() 
 
-# 12 bowls layout
 with st.container(key="bowl_grid"):
     cols = st.columns(12, gap="small")
     y_offsets = [80, 76, 68, 52, 30, 0, 0, 30, 52, 68, 76, 80]
@@ -375,8 +390,7 @@ with st.container(key="bowl_grid"):
                         .bowl {{
                             width: 36px !important;
                             height: 36px !important;
-                            /* Adjusted top curve calculation perfectly tailored for the new 70px height constraints */
-                            top: calc(5px + ({y_offsets[i]}px * 0.35)) !important; 
+                            top: calc(10px + ({y_offsets[i]}px * 0.4)) !important; 
                             bottom: auto !important; 
                             border-width: 2px !important;
                             box-shadow: 
@@ -401,8 +415,8 @@ with st.container(key="bowl_grid"):
                             console.log("Audio playback failed:", error);
                         }});
                         
-                        // Synchronize the waveform seamlessly via the Streamlit backend
-                        const hiddenDivs = window.parent.document.querySelectorAll('div[class*="st-key-hp_{i}"]');
+                        // Query with 02d padding to avoid substring mismatches
+                        const hiddenDivs = window.parent.document.querySelectorAll('div[class*="st-key-hp_{i:02d}"]');
                         hiddenDivs.forEach(div => {{
                             const btn = div.querySelector('button');
                             if (btn) btn.click();
@@ -421,10 +435,10 @@ with st.container(key="bowl_grid"):
             st.button("🌕 Full", key=f"f_{i}", use_container_width=True, on_click=water_change, args=(i, 2))
             st.button("🌑 Empty", key=f"e_{i}", use_container_width=True, on_click=water_change, args=(i, 0))
 
-# Invisible block storing the interaction hooks for waveform synchronization
+# Invisible block storing exactly padded keys for precise JS triggering
 with st.container(key="hidden_buttons"):
     for i in range(12):
-        if st.button("hp", key=f"hp_{i}"):
+        if st.button("hp", key=f"hp_{i:02d}"):
             st.session_state.last_hz = find_hz(st.session_state.notes[i])
 
 with st.container(key="lower_content"):
