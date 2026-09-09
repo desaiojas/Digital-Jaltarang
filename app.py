@@ -36,26 +36,22 @@ st.markdown("""
         border-color: #2c1e16 !important;
     }
 
-    /* ===================================== */
-    /* SIDEBAR BUTTONS — KEEP WIDE           */
-    /* ===================================== */
-
+    /* SIDEBAR BUTTONS — KEEP WIDE */
     [data-testid="stSidebar"] .stButton > button {
         min-width: 200px !important;
     }
 
-    /* ===================================== */
-    /* START PLAYING — KEEP WIDE             */
-    /* ===================================== */
-
+    /* START PLAYING — KEEP WIDE */
     .stButton > button[kind="primary"] {
         min-width: 170px !important;
     }
 
-    /* ===================================== */
-    /* DEFAULT DESKTOP BOWL LAYOUT           */
-    /* ===================================== */
+    /* HIDDEN PLAY BUTTONS FOR WAVEFORM SYNC */
+    div[class*="st-key-hidden_buttons"] {
+        display: none !important;
+    }
 
+    /* DEFAULT DESKTOP BOWL LAYOUT */
     [data-testid="column"] {
         overflow: visible !important;
     }
@@ -104,51 +100,49 @@ st.markdown("""
         margin-top: 25px;
     }
 
+    [class*="st-key-bowl_grid"] [data-testid="stVerticalBlock"] {
+        gap: 5px; 
+    }
+
     /* ===================================== */
     /* MOBILE SHRINK-TO-FIT & SPACING HACKS  */
-    /* Everything below is scoped to mobile  */
-    /* widths only. Desktop is untouched.    */
     /* ===================================== */
 
     @media (max-width: 768px) {
-        /* 1. Force columns to stay in one row and pull the whole bowl row up towards the title */
+        /* 1. Force columns to stay in one row */
         div[data-testid="stHorizontalBlock"] {
             flex-wrap: nowrap !important;
             gap: 1px !important;
-            margin-top: -15px !important; 
+            margin-top: -10px !important; 
         }
 
-        /* Hide the massive gap below the reminder on mobile */
         .title-spacer {
             display: none !important;
         }
 
-            /* TARGET ONLY THE LOWER ROWS: Pulls the divider/header/chart block upward.
-               This targets it directly by its own key class (like bowl_grid above),
-               instead of guessing at sibling relationships in Streamlit's DOM. */
-            [class*="st-key-lower_content"] {
-                margin-top: -90px !important; 
-            }
-
+        /* Revert the massive negative margin hack so things flow naturally */
+        [class*="st-key-lower_content"] {
+            margin-top: 15px !important; 
+        }
 
         /* 2. ROOT-CAUSE FIX FOR YANKING EVERYTHING UP
-           Streamlit dynamically applies height to 3 layers of wrappers around the iframe. 
-           We crush all of them to 90px. This completely alters the document flow, natively 
-           dragging the captions, fill-buttons, divider, and frequency chart upward by 100px. */
+           Crush the iframe and all its Streamlit wrappers natively 
+           so the document flow correctly pulls lower content upward. */
         [class*="st-key-bowl_grid"] [data-testid="column"] > div.element-container:nth-child(1),
         [class*="st-key-bowl_grid"] [data-testid="column"] > div.element-container:nth-child(1) > div,
         [class*="st-key-bowl_grid"] [data-testid="column"] > div.element-container:nth-child(1) iframe {
-            height: 60px !important;
-            min-height: 60px !important;
-            max-height: 60px !important;
+            height: 70px !important;
+            min-height: 70px !important;
+            max-height: 70px !important;
+            margin-bottom: 0px !important;
         }
 
-        /* Small cosmetic tightening between the iframe and the note/Hz caption */
-        [class*="st-key-bowl_grid"] [data-testid="column"] div[data-testid="stCaptionContainer"] {
-            margin-top: -4px !important;
+        /* 3. Tighten the flex gap between the bowls and buttons strictly to 0 */
+        [class*="st-key-bowl_grid"] [data-testid="stVerticalBlock"] {
+            gap: 0px !important;
         }
 
-        /* 3. Unlock the hardcoded widths so they can squish */
+        /* 4. Unlock the hardcoded widths so they can squish */
         div[data-testid="column"] {
             min-width: 0px !important;
             max-width: none !important;
@@ -162,14 +156,11 @@ st.markdown("""
             max-width: none !important;
         }
 
-        /* 4. TRUE EMOJI REPLACEMENT (bowl grid only, keeping header buttons untouched) */
-
-        /* Visually obliterate the inner text div so Streamlit can't override it */
+        /* 5. TRUE EMOJI REPLACEMENT (bowl grid only) */
         [class*="st-key-bowl_grid"] [data-testid="stButton"] > button > div {
             display: none !important;
         }
 
-        /* Configure the empty button shell to hold the emoji */
         [class*="st-key-bowl_grid"] [data-testid="stButton"] > button {
             width: 100% !important;
             min-width: 0px !important;
@@ -182,25 +173,17 @@ st.markdown("""
             justify-content: center !important;
         }
 
-        /* Mount emojis using each button's own Streamlit `key` (h_/f_/e_) */
-        [class*="st-key-bowl_grid"] [class*="st-key-h_"] button::after {
-            content: "🌗";
-            font-size: 18px;
-        }
-        [class*="st-key-bowl_grid"] [class*="st-key-f_"] button::after {
-            content: "🌕";
-            font-size: 18px;
-        }
-        [class*="st-key-bowl_grid"] [class*="st-key-e_"] button::after {
-            content: "🌑";
-            font-size: 18px;
-        }
+        [class*="st-key-bowl_grid"] [class*="st-key-h_"] button::after { content: "🌗"; font-size: 18px; }
+        [class*="st-key-bowl_grid"] [class*="st-key-f_"] button::after { content: "🌕"; font-size: 18px; }
+        [class*="st-key-bowl_grid"] [class*="st-key-e_"] button::after { content: "🌑"; font-size: 18px; }
 
-        /* 5. Force shrink captions (Hz text) */
+        /* 6. Force shrink captions */
         div[data-testid="stCaptionContainer"] p {
             font-size: 9px !important;
             line-height: 1.1 !important;
             margin-bottom: 2px !important;
+            margin-top: 0px !important;
+            padding: 0px !important;
         }
     }
 </style>
@@ -229,8 +212,6 @@ FSH = "F#H Jaltarang.wav"
 GH = "GH Jaltarang.wav"
 
 ALL_PITCHES = [C, CS, D, DS, E, F, FS, G, GS, A, AS, B, CH, CSH, DH, DSH, EH, FH, FSH, GH]
-
-# 12 Bowls for the standard C Major Scale
 BASE_NOTES = [C, D, E, F, G, A, B, CH, DH, EH, FH, GH]
 
 if 'started' not in st.session_state:
@@ -269,7 +250,6 @@ def water_change(ind, fill_level):
     base_note = BASE_NOTES[ind]
     try:
         base_idx = ALL_PITCHES.index(base_note)
-        # Prevents index from dropping below 0 (C)
         new_idx = max(0, base_idx - fill_level) 
         st.session_state.notes[ind] = ALL_PITCHES[new_idx]
         st.session_state.water_states[ind] = fill_level
@@ -325,12 +305,9 @@ st.markdown("<div class='title-spacer'></div>", unsafe_allow_html=True)
 st.session_state.audio_player = st.empty() 
 
 # 12 bowls layout
-# Wrapped in a keyed container so the mobile-only CSS above can target it directly
 with st.container(key="bowl_grid"):
     cols = st.columns(12, gap="small")
     y_offsets = [80, 76, 68, 52, 30, 0, 0, 30, 52, 68, 76, 80]
-
-    # 0: Ceramic White/Gray, 1: Vibrant Aqua, 2: Deep Sapphire
     colors = {0: "#F8F9FA", 1: "#00B4D8", 2: "#03045E"} 
 
     for i in range(12):
@@ -367,7 +344,6 @@ with st.container(key="bowl_grid"):
                         overflow: visible;
                     }}
 
-                    /* Default Desktop Size */
                     .bowl {{
                         position: absolute;
                         top: {y_offsets[i]}px;
@@ -395,13 +371,12 @@ with st.container(key="bowl_grid"):
                         transform: translateX(-50%) scale(0.97);
                     }}
                     
-                    /* Mobile Size overrides */
                     @media (max-width: 80px) {{
                         .bowl {{
                             width: 36px !important;
                             height: 36px !important;
-                            /* Because the parent container is crushed to 90px height, we must reset the top curve calculation to 10px so the bowl remains visible inside the squashed iframe. */
-                            top: calc(10px + ({y_offsets[i]}px * 0.4)) !important; 
+                            /* Adjusted top curve calculation perfectly tailored for the new 70px height constraints */
+                            top: calc(5px + ({y_offsets[i]}px * 0.35)) !important; 
                             bottom: auto !important; 
                             border-width: 2px !important;
                             box-shadow: 
@@ -411,7 +386,6 @@ with st.container(key="bowl_grid"):
                     }}
                 </style>
             </head>
-
             <body>
                 <div class="bowl-stage">
                     <div class="bowl" id="bowl"></div>
@@ -419,14 +393,19 @@ with st.container(key="bowl_grid"):
 
                 <script>
                     const bowl = document.getElementById("bowl");
-                    const audio = new Audio(
-                        "data:audio/wav;base64,{audio_b64}"
-                    );
+                    const audio = new Audio("data:audio/wav;base64,{audio_b64}");
 
                     bowl.addEventListener("click", function() {{
                         audio.currentTime = 0;
                         audio.play().catch(function(error) {{
                             console.log("Audio playback failed:", error);
+                        }});
+                        
+                        // Synchronize the waveform seamlessly via the Streamlit backend
+                        const hiddenDivs = window.parent.document.querySelectorAll('div[class*="st-key-hp_{i}"]');
+                        hiddenDivs.forEach(div => {{
+                            const btn = div.querySelector('button');
+                            if (btn) btn.click();
                         }});
                     }});
                 </script>
@@ -434,12 +413,7 @@ with st.container(key="bowl_grid"):
             </html>
             """
 
-            components.html(
-                bowl_html,
-                width="stretch",
-                height=190,
-                scrolling=False
-            )
+            components.html(bowl_html, width="stretch", height=190, scrolling=False)
 
             st.caption(f"<div style='text-align: center; color: #2c1e16;'><b>{note_label}</b><br>{hz} Hz</div>", unsafe_allow_html=True)
 
@@ -447,9 +421,12 @@ with st.container(key="bowl_grid"):
             st.button("🌕 Full", key=f"f_{i}", use_container_width=True, on_click=water_change, args=(i, 2))
             st.button("🌑 Empty", key=f"e_{i}", use_container_width=True, on_click=water_change, args=(i, 0))
 
-# Wrapped in its own keyed container (same trick as bowl_grid above) so the
-# mobile CSS rule can target this whole block directly by class, instead of
-# guessing at sibling relationships in Streamlit's generated DOM.
+# Invisible block storing the interaction hooks for waveform synchronization
+with st.container(key="hidden_buttons"):
+    for i in range(12):
+        if st.button("hp", key=f"hp_{i}"):
+            st.session_state.last_hz = find_hz(st.session_state.notes[i])
+
 with st.container(key="lower_content"):
     st.divider()
     st.markdown(f"### Frequencies: {st.session_state.last_hz} Hz")
